@@ -51,6 +51,11 @@ instituição e período ficam em branco de propósito: o parecer não os inform
 
 ## 3. Criar o primeiro acesso
 
+> **Não existe senha padrão.** O seed cria apenas o registro da comissão em
+> `avaliadores`; ele não cria usuário nem senha no Auth. A senha do login é
+> definida por você em **Authentication > Users**. A chave anon/publishable e a
+> senha do banco Postgres não servem para entrar no app.
+
 1. Em **Authentication > Users**, clique em **Add user** e crie o usuário da
    presidência com e-mail e senha (marque o e-mail como confirmado).
 2. Edite e rode [`seed_presidente.sql`](seed_presidente.sql), trocando nome,

@@ -111,6 +111,11 @@ Os dados da demo ficam no `localStorage` **daquele navegador**. O menu do perfil
 3. Reinicie o `npm run dev`.
 4. Entre com o e-mail e a senha criados no Supabase Auth.
 
+> **Não há senha padrão.** O seed do banco cria o perfil da presidência, mas não
+> cria credenciais. Defina a senha ao criar o usuário em **Authentication >
+> Users**; para um usuário existente, use a opção de redefinir senha no mesmo
+> painel. A chave anon e a senha do Postgres não são a senha do app.
+
 O prefixo `VITE_` **não é uma senha**: é só a marca do Vite para o que pode ser embutido no bundle. A chave anon/publishable é pública por design, e o RLS protege os dados. O build injeta apenas URL e chave pública; ele recusa a `service_role`. Sem essas variáveis, o app abre em demonstração — útil para conhecer o fluxo sem tocar no banco. Se o schema ainda não estiver aplicado, a tela de login mostra o aviso e o caminho para corrigir.
 
 ### Build de produção
