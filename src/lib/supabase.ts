@@ -1,18 +1,27 @@
 import { createClient } from '@supabase/supabase-js';
 
 /**
- * Chave publicável (publishable key): pode ser exposta no front-end.
+ * Chave publicável (publishable/anon key): pode ser exposta no front-end.
  * O acesso real é controlado pelas políticas de RLS do Supabase.
  *
- * Sem VITE_SUPABASE_URL e VITE_SUPABASE_ANON_KEY o app abre em modo
- * demonstração. Em produção, defina as duas no ambiente de deploy; nunca
- * coloque a service_role no front-end.
+ * O padrão do Vite é VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY. Também
+ * aceitamos SUPABASE_URL / SUPABASE_ANON_KEY porque a integração Supabase da
+ * Vercel usa esses nomes; o vite.config.ts injeta somente esses dois valores
+ * públicos. Nunca coloque a service_role no front-end.
+ *
+ * Sem URL e chave o app abre em modo demonstração.
  */
-const url = (import.meta.env.VITE_SUPABASE_URL as string | undefined)?.trim() ?? '';
-const chave =
-  (import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined)?.trim() ||
-  (import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string | undefined)?.trim() ||
-  '';
+const url = (
+  (import.meta.env.VITE_SUPABASE_URL as string | undefined) ||
+  __SUPABASE_URL__ ||
+  ''
+).trim();
+const chave = (
+  (import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined) ||
+  (import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string | undefined) ||
+  __SUPABASE_ANON_KEY__ ||
+  ''
+).trim();
 
 export const SUPABASE_CONFIGURADO = Boolean(url && chave);
 

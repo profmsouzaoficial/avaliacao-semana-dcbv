@@ -105,11 +105,13 @@ Os dados da demo ficam no `localStorage` **daquele navegador**. O menu do perfil
 ### Modo Supabase (uso real)
 
 1. Siga [`supabase/README.md`](supabase/README.md) para criar o projeto e rodar a migração.
-2. Copie `.env.example` para `.env.local` e preencha `VITE_SUPABASE_URL` e `VITE_SUPABASE_ANON_KEY`.
+2. Copie `.env.example` para `.env.local` e preencha **uma** das formas:
+   - `VITE_SUPABASE_URL` + `VITE_SUPABASE_ANON_KEY` (padrão do Vite);
+   - `SUPABASE_URL` + `SUPABASE_ANON_KEY` (nomes usados pela integração Supabase da Vercel).
 3. Reinicie o `npm run dev`.
 4. Entre com o e-mail e a senha criados no Supabase Auth.
 
-Sem `.env.local`, o app tenta um projeto de modo demonstração. Se o schema dele não estiver aplicado, a tela de login mostra o aviso e o caminho para corrigir. Para uma demonstração offline, use `?demo=...`.
+O prefixo `VITE_` **não é uma senha**: é só a marca do Vite para o que pode ser embutido no bundle. A chave anon/publishable é pública por design, e o RLS protege os dados. O build injeta apenas URL e chave pública; ele recusa a `service_role`. Sem essas variáveis, o app abre em demonstração — útil para conhecer o fluxo sem tocar no banco. Se o schema ainda não estiver aplicado, a tela de login mostra o aviso e o caminho para corrigir.
 
 ### Build de produção
 
@@ -194,10 +196,12 @@ A chave publishable/anon é pública; **a proteção vem do RLS**. Nunca coloque
 
 1. Importe o repositório em <https://vercel.com/new>.
 2. Preset **Vite**; build `npm run build`; output `dist`.
-3. Em **Settings > Environment Variables**, adicione:
-   - `VITE_SUPABASE_URL`
-   - `VITE_SUPABASE_ANON_KEY`
+3. Em **Settings > Environment Variables**, adicione **uma** das duplas:
+   - `VITE_SUPABASE_URL` + `VITE_SUPABASE_ANON_KEY` (padrão); ou
+   - `SUPABASE_URL` + `SUPABASE_ANON_KEY` (nomes da integração Supabase da Vercel).
 4. Faça o deploy.
+
+O prefixo `VITE_` não torna a chave secreta — ele apenas permite que o Vite a embuta no navegador. Use sempre a chave anon/publishable; o build bloqueia `sb_secret_` e JWTs com papel `service_role`.
 
 As variáveis são embutidas no bundle em tempo de build; mudou a chave, precisa de novo deploy. O app não usa rotas no servidor (só query string `?demo=`), então não é necessário rewrite de SPA.
 

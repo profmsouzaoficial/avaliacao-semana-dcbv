@@ -19,8 +19,19 @@ VITE_SUPABASE_URL=https://SEU-PROJETO.supabase.co
 VITE_SUPABASE_ANON_KEY=sb_publishable_...
 ```
 
-> A publishable/anon key é pública por design. A proteção real vem das políticas
-> de RLS e da autenticação; nunca coloque a `service_role` no front-end.
+Se a integração Supabase da Vercel criar as variáveis sem prefixo, também
+funciona:
+
+```env
+SUPABASE_URL=https://SEU-PROJETO.supabase.co
+SUPABASE_ANON_KEY=sb_publishable_...
+```
+
+> O prefixo `VITE_` não é uma camada de segurança: ele só marca o que o Vite
+> embute no navegador. A publishable/anon key é pública por design; a proteção
+> real vem das políticas de RLS e da autenticação. Nunca coloque a `service_role`
+> no front-end. O build recusa chaves `sb_secret_` e JWTs com papel
+> `service_role`.
 
 ## 2. Rodar a migração
 
@@ -108,7 +119,12 @@ order by ordem;
 ## 8. Deploy
 
 No Vercel, importe o repositório, mantenha o preset **Vite**, build
-`npm run build` e output `dist`. Configure `VITE_SUPABASE_URL` e
-`VITE_SUPABASE_ANON_KEY` em **Settings > Environment Variables** e refaça o
-deploy. As variáveis são embutidas no bundle em tempo de build; alterá-las exige
-um novo deploy.
+`npm run build` e output `dist`. Configure em **Settings > Environment
+Variables** uma das duplas aceitas:
+
+- `VITE_SUPABASE_URL` + `VITE_SUPABASE_ANON_KEY` (padrão); ou
+- `SUPABASE_URL` + `SUPABASE_ANON_KEY` (nomes da integração Supabase da Vercel).
+
+As variáveis são embutidas no bundle em tempo de build; alterá-las exige um novo
+deploy. Use apenas a chave anon/publishable; o build bloqueia `sb_secret_` e
+`service_role`.
