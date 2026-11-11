@@ -113,7 +113,9 @@ export function AtaOficial({ dados }: { dados: DadosAta }) {
         <p className="mt-1.5 text-[8.1pt] leading-[1.45] text-[#263330]">
           {cobertura.semAvaliacao > 0
             ? `${contar(cobertura.semAvaliacao, 'trabalho ainda sem avaliação concluída', 'trabalhos ainda sem avaliação concluída')}. `
-            : 'Todos os trabalhos cadastrados possuem ao menos uma avaliação concluída. '}
+            : cobertura.comMinimo < cobertura.total
+              ? `Todos os trabalhos cadastrados possuem ao menos uma avaliação concluída; ${contar(cobertura.total - cobertura.comMinimo, 'trabalho ainda não atingiu', 'trabalhos ainda não atingiram')} a cobertura mínima de duas avaliações. `
+              : 'Todos os trabalhos cadastrados possuem cobertura mínima de duas avaliações concluídas. '}
           {avaliadores.length > 0
             ? `Participaram da avaliação ${contar(avaliadores.length, 'membro', 'membros')}: ${avaliadores
                 .map((r) => r.membro.nome)
