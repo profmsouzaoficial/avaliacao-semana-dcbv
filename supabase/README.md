@@ -122,8 +122,10 @@ SUPABASE_SERVICE_ROLE_KEY=sb_secret_SUA_CHAVE
 
 A chave `service_role`/secret **nunca** vai para o Vercel, para o bundle ou para
 o repositório; o script roda apenas na sua máquina. O modo padrão considera
-perfis ativos com `papel = 'avaliador'` e **não mexe na senha dos masters**. Para
-incluí-los, use `--incluir-masters`.
+perfis ativos com `papel = 'avaliador'` e **não mexe na senha dos masters**. Se
+algum dos 18 foi promovido a `presidente`, use `--incluir-masters` para criar a
+conta dele também. Contas que já têm `user_id` vinculado são **preservadas**;
+use `--redefinir-vinculados` apenas se quiser trocar a senha delas.
 
 > **Isso é desaconselhado em produção aberta.** O e-mail é visível para os
 > membros autenticados; quem souber o e-mail de outro avaliador pode entrar na

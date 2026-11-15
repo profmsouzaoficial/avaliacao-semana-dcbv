@@ -140,9 +140,12 @@ máquina.
 > preferir a facilidade. Para um evento aberto, prefira senha temporária
 > individual e troca no primeiro acesso.
 
-O script considera apenas perfis ativos com `papel = 'avaliador'`; a presidência
-fica de fora para não trocar a senha do master. Para incluir também os masters,
-acrescente `--incluir-masters`. Rode o seed dos avaliadores antes.
+O script considera os perfis ativos. Por padrão, ele usa apenas
+`papel = 'avaliador'`; se algum dos 18 foi promovido a `presidente`, ele fica
+sem conta até você usar `--incluir-masters`. Contas que já têm `user_id`
+vinculado são **preservadas** para não trocar a senha de quem já usa o sistema;
+para redefini-las também, use `--redefinir-vinculados`. Rode o seed dos
+avaliadores antes.
 
 O prefixo `VITE_` **não é uma senha**: é só a marca do Vite para o que pode ser embutido no bundle. A chave anon/publishable é pública por design, e o RLS protege os dados. O build injeta apenas URL e chave pública; ele recusa a `service_role`. Sem essas variáveis, o app abre em demonstração — útil para conhecer o fluxo sem tocar no banco. Se o schema ainda não estiver aplicado, a tela de login mostra o aviso e o caminho para corrigir.
 

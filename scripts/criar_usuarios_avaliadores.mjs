@@ -14,6 +14,11 @@
  *   npm run auth:senhas                  # modo conferência (não altera nada)
  *   npm run auth:senhas -- --aplicar     # cria/redefine de verdade
  *   npm run auth:senhas -- --aplicar --incluir-masters
+ *   npm run auth:senhas -- --aplicar --incluir-masters --redefinir-vinculados
+ *
+ * Por segurança, contas que já têm user_id vinculado em public.avaliadores
+ * são preservadas por padrão. Use --redefinir-vinculados somente se quiser
+ * trocar também a senha dessas contas.
  *
  * Pré-requisitos:
  *   - seed_avaliadores.sql já executado (perfis em public.avaliadores);
@@ -32,6 +37,7 @@ carregarEnvLocal(resolve(RAIZ, '.env.local'));
 
 const aplicar = process.argv.includes('--aplicar');
 const incluirMasters = process.argv.includes('--incluir-masters');
+const redefinirVinculados = process.argv.includes('--redefinir-vinculados');
 const url = (process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || '').replace(/\/+$/, '');
 const chave =
   process.env.SUPABASE_SERVICE_ROLE_KEY ||
@@ -107,6 +113,15 @@ const porEmail = new Map(
 
 const acoes = alvos.map((perfil) => {
   const usuario = porEmail.get(perfil.email);
+  if (perfil.user_id && !redefinirVinculados) {
+    return {
+      perfil,
+      usuario,
+      tipo: 'preservar',
+      senha: null,
+      motivo: 'conta já vinculada em avaliadores.user_id',
+    };
+  }
   return {
     perfil,
     usuario,
@@ -117,27 +132,35 @@ const acoes = alvos.map((perfil) => {
 
 console.log(`\nProjeto: ${url}`);
 console.log(`Perfis ativos considerados: ${alvos.length}${incluirMasters ? ' (incluindo masters)' : ' (somente papel=avaliador)'}`);
-console.log(`Já têm conta no Auth: ${acoes.filter((a) => a.tipo === 'redefinir').length}`);
+console.log(`Já têm conta no Auth: ${acoes.filter((a) => a.usuario).length}`);
 console.log(`Serão criados: ${acoes.filter((a) => a.tipo === 'criar').length}`);
+console.log(`Senhas a redefinir: ${acoes.filter((a) => a.tipo === 'redefinir').length}`);
+console.log(`Preservados (já vinculados): ${acoes.filter((a) => a.tipo === 'preservar').length}`);
 console.log('Senha inicial: o próprio e-mail, em minúsculas.\n');
 
 for (const acao of acoes) {
-  console.log(`  [${acao.tipo === 'criar' ? 'criar' : 'redefinir'}] ${acao.perfil.email} — ${acao.perfil.nome}`);
+  const rotulo = acao.tipo === 'preservar' ? 'preservar' : acao.tipo;
+  console.log(`  [${rotulo}] ${acao.perfil.email} — ${acao.perfil.nome}${acao.motivo ? ` (${acao.motivo})` : ''}`);
 }
 
 if (!aplicar) {
   console.log('\nModo conferência: nada foi alterado.');
   console.log('Para aplicar: npm run auth:senhas -- --aplicar');
-  console.log('Para incluir também os masters: npm run auth:senhas -- --aplicar --incluir-masters\n');
+  console.log('Para incluir também os masters: npm run auth:senhas -- --aplicar --incluir-masters');
+  console.log('Para trocar também contas já vinculadas: acrescente --redefinir-vinculados\n');
   process.exit(0);
 }
 
-console.log('\nAplicando... (a senha de contas existentes será substituída pelo e-mail)\n');
+console.log('\nAplicando... (contas novas recebem senha = e-mail; contas vinculadas são preservadas)\n');
 let criados = 0;
 let redefinidos = 0;
 let falhas = 0;
 
 for (const acao of acoes) {
+  if (acao.tipo === 'preservar') {
+    console.log(`  --  preservada       ${acao.perfil.email}`);
+    continue;
+  }
   try {
     if (acao.usuario) {
       const { error } = await admin.auth.admin.updateUserById(acao.usuario.id, {
@@ -164,7 +187,8 @@ for (const acao of acoes) {
   }
 }
 
-console.log(`\nResumo: ${criados} criada(s), ${redefinidos} senha(s) redefinida(s), ${falhas} falha(s).`);
+const preservados = acoes.filter((a) => a.tipo === 'preservar').length;
+console.log(`\nResumo: ${criados} criada(s), ${redefinidos} senha(s) redefinida(s), ${preservados} preservada(s), ${falhas} falha(s).`);
 console.log('A senha inicial de cada conta é o próprio e-mail, em minúsculas.');
 console.log('No primeiro login, vincular_meu_usuario() liga o Auth ao perfil pelo e-mail.\n');
 if (falhas) process.exitCode = 1;
