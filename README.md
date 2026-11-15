@@ -207,7 +207,7 @@ Passo a passo, incluindo o bootstrap da primeira presidência, em [`supabase/REA
 
 ### Carga dos avaliadores do PDF
 
-O arquivo [`supabase/seed_avaliadores.sql`](supabase/seed_avaliadores.sql) cadastra os 18 avaliadores únicos e importa as 95 atribuições do PDF. Ele é **idempotente** (pode rodar de novo) e termina com um relatório de cobertura.
+O arquivo [`supabase/seed_avaliadores.sql`](supabase/seed_avaliadores.sql) cadastra os 18 avaliadores únicos e importa as 95 atribuições do PDF. Ele é **idempotente** (pode rodar de novo) e termina com um relatório de cobertura. O caso `07.04`/`07.03` é resolvido pelo código e pelo título “dengue”, para não atribuir a pessoa ao trabalho errado.
 
 > **Confira os e-mails antes de rodar.** O PDF não traz e-mails; eles foram inferidos dos nomes. Se algum estiver errado, corrija no SQL **antes** de executar. O vínculo é por e-mail, não por nome.
 

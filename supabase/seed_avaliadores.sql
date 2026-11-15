@@ -74,7 +74,9 @@ on conflict (lower(email)) do update
 -- Formato: (código no PDF, e-mail do avaliador, código alternativo no banco).
 -- O código alternativo só é usado para o caso 07.04/07.03:
 -- o PDF chama de 07.04 o trabalho de dengue que o seed do app chama de 07.03.
--- Se o banco tiver 07.04, ele é preferido; se não, o SQL usa 07.03.
+-- Se o banco tiver 07.04, ele é preferido; se não, o SQL usa 07.03. Para não
+-- atribuir a pessoa ao trabalho errado quando os dois códigos existem, o
+-- fallback exige que o título contenha "dengue".
 -- ----------------------------------------------------------------------------
 with lista_pdf (codigo, email, codigo_alternativo) as (
   values
@@ -181,8 +183,12 @@ resolvidas as (
     coalesce(t.id, t_alt.id) as trabalho_id,
     a.id as avaliador_id
   from lista_pdf l
-  left join public.trabalhos t on t.codigo = l.codigo
-  left join public.trabalhos t_alt on t_alt.codigo = l.codigo_alternativo
+  left join public.trabalhos t
+    on t.codigo = l.codigo
+   and (l.codigo <> '07.04' or t.titulo ilike '%dengue%')
+  left join public.trabalhos t_alt
+    on t_alt.codigo = l.codigo_alternativo
+   and (l.codigo <> '07.04' or t_alt.titulo ilike '%dengue%')
   join public.avaliadores a on lower(a.email) = lower(l.email)
 )
 insert into public.atribuicoes (id, trabalho_id, avaliador_id)
@@ -330,8 +336,9 @@ codigos_sem_trabalho as (
   from lista_pdf l
   where not exists (
     select 1 from public.trabalhos t
-    where t.codigo = l.codigo
-       or (l.codigo = '07.04' and t.codigo = '07.03')
+    where (t.codigo = l.codigo
+           and (l.codigo <> '07.04' or t.titulo ilike '%dengue%'))
+       or (l.codigo = '07.04' and t.codigo = '07.03' and t.titulo ilike '%dengue%')
   )
 ),
 emails_sem_cadastro as (
@@ -349,8 +356,9 @@ codigos_ausentes as (
   from lista_pdf l
   where not exists (
     select 1 from public.trabalhos t
-    where t.codigo = l.codigo
-       or (l.codigo = '07.04' and t.codigo = '07.03')
+    where (t.codigo = l.codigo
+           and (l.codigo <> '07.04' or t.titulo ilike '%dengue%'))
+       or (l.codigo = '07.04' and t.codigo = '07.03' and t.titulo ilike '%dengue%')
   )
 ),
 emails_ausentes as (

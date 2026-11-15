@@ -77,10 +77,10 @@ PDF fica com 1 de 2; a segunda atribuição deve ser feita em **Curadoria →
 Distribuição** (botão **Completar distribuição**) ou por **Importar lista**.
 
 **Caso 07.04 / 07.03:** o PDF chama de `07.04` o trabalho de dengue que o seed
-da demo chama de `07.03`. O SQL tenta primeiro `07.04` e, se ele não existir, usa
-`07.03`. Se o seu banco tiver os dois códigos, pode ficar uma atribuição em cada
-um depois de rodar o seed mais de uma vez; confira o relatório e ajuste na
-matriz.
+da demo chama de `07.03`. O SQL tenta primeiro `07.04`; se ele não existir — ou
+se existir mas o título não contiver “dengue” — tenta `07.03`, também pelo
+título. Se nenhum dos dois for o trabalho de dengue, ele **não atribui** e mostra
+o código no relatório. Confira o título e ajuste na matriz se necessário.
 
 ## 3. Criar o primeiro acesso
 
