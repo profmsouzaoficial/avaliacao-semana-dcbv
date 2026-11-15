@@ -14,6 +14,7 @@ import {
 import type { Trabalho } from '../types';
 import { SESSOES, sessaoPorNumero } from '../data/event';
 import { useApp } from '../context/AppContext';
+import { agruparDuplicatas } from '../lib/duplicates';
 import { mensagemDeErro } from '../lib/supabase';
 import { classNames, contar, iniciais } from '../lib/format';
 import { Badge } from './Badge';
@@ -40,6 +41,11 @@ export function DistributionMatrix({ onEditarTrabalho, onNovoMembro }: Distribut
   const mapaAtribuicoes = useMemo(
     () => new Set(atribuicoes.map((a) => `${a.trabalhoId}:${a.avaliadorId}`)),
     [atribuicoes],
+  );
+  const duplicatas = useMemo(() => agruparDuplicatas(trabalhos), [trabalhos]);
+  const codigosDuplicados = useMemo(
+    () => new Set(duplicatas.flatMap((grupo) => grupo.map((t) => t.codigo))),
+    [duplicatas],
   );
   const mapaAvaliacoes = useMemo(() => {
     const mapa = new Map<string, boolean>();
@@ -242,6 +248,17 @@ export function DistributionMatrix({ onEditarTrabalho, onNovoMembro }: Distribut
         </div>
       </div>
 
+      {duplicatas.length > 0 && (
+        <div className="flex items-start gap-2 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-[11px] leading-relaxed text-rose-900">
+          <span className="mt-0.5 h-2 w-2 shrink-0 rounded-full bg-rose-500" />
+          <p>
+            <strong>{contar(duplicatas.length, 'título aparece', 'títulos aparecem')} em dois códigos.</strong>{' '}
+            A matriz mantém os 14 registros; confirme com a comissão qual é o código oficial antes
+            de distribuir. O PDF usa os dois códigos em 06.02/06.03 e não registra 03.35.
+          </p>
+        </div>
+      )}
+
       {avaliadores.length === 0 ? (
         <div className="card px-5 py-10 text-center">
           <Users className="mx-auto h-7 w-7 text-ink-muted" />
@@ -298,6 +315,11 @@ export function DistributionMatrix({ onEditarTrabalho, onNovoMembro }: Distribut
                           >
                             {trabalho.codigo}
                           </button>
+                          {codigosDuplicados.has(trabalho.codigo) && (
+                            <Badge tom="rose" className="scale-90">
+                              duplicata
+                            </Badge>
+                          )}
                           <span
                             className={classNames(
                               'shrink-0 rounded-full px-1.5 py-0.5 text-[8px] font-bold',

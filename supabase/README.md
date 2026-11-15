@@ -79,6 +79,14 @@ trabalho correspondente.
 PDF fica com 1 de 2; a segunda atribuição deve ser feita em **Curadoria →
 Distribuição** (botão **Completar distribuição**) ou por **Importar lista**.
 
+**Duplicatas:** a planilha tem 102 linhas, mas 7 títulos aparecem em dois
+códigos (`03.13/03.14`, `03.17/05.13`, `03.22/05.16`, `03.33/03.34`,
+`06.02/06.03`, `06.11/06.12`, `07.03/07.04`). O PDF atribuiu um código da
+maioria dos pares, **os dois** no par `06.02/06.03`, e não atribuiu o `03.35`
+(que não tem par). A interface marca esses 14 registros como **duplicata**; não
+funda os registros sozinha. A comissão deve escolher o código oficial e, se for
+o caso, migrar uma das atribuições de `06.02/06.03` para `03.35`.
+
 ### 2.2 Carga dos 102 trabalhos oficiais
 
 Depois de criar os perfis, rode na máquina do administrador:

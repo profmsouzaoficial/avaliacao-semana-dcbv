@@ -194,7 +194,7 @@ Na aba **Distribuição**, o botão **Importar lista** aceita uma lista `e-mail;
 - O botão **Cadastrar avaliador** abre o mesmo formulário de membro. Ele cria o perfil, **não a senha**: o usuário do Auth é criado no Supabase, com o mesmo e-mail.
 - O aviso “trabalho com 2+” não impede a importação; serve para você perceber se está duplicando uma atribuição existente.
 
-> **Cobertura do PDF:** o arquivo recebido tem 18 avaliadores únicos e 95 atribuições, mas **apenas um avaliador por trabalho**. O Regulamento e o app pedem dois. Use **Completar distribuição** ou importe uma segunda lista; o relatório do SQL mostra quantos trabalhos ainda têm só um.
+> **Cobertura do PDF:** o arquivo recebido tem 18 avaliadores únicos e 95 atribuições. Na maioria dos trabalhos há **um avaliador**; o par duplicado `06.02`/`06.03` recebeu dois. O Regulamento e o app pedem dois por trabalho. Use **Completar distribuição** ou importe uma segunda lista; o relatório do SQL mostra quantos trabalhos ainda têm só um.
 
 ### Carregar a base oficial de 102 trabalhos
 
@@ -215,7 +215,25 @@ O script é **idempotente** e não apaga trabalhos nem avaliações:
 
 > **Categoria metodológica:** nem o parecer nem o formulário oficial informam a categoria 1–5. Os trabalhos novos entram com **categoria 1** e a observação “Categoria metodológica a confirmar”. A interface mostra **A confirmar** e a Curadoria tem um filtro próprio para revisar esses 82 registros antes da avaliação. A nota não depende da categoria; ela contextualiza o barema.
 
-**Cobertura:** o PDF cobre 95 dos 102 trabalhos. Os 7 sem atribuição são `03.13`, `03.33`, `03.35`, `05.13`, `05.16`, `06.11` e `07.03`; em vários casos o PDF atribuiu o código gêmeo (`03.14`, `03.34`, `07.04`). Confira a matriz e complete o segundo avaliador.
+### Duplicatas da planilha oficial
+
+A planilha do parecer tem **102 linhas, mas 7 títulos aparecem em dois códigos** — o mesmo trabalho, com diferenças de caixa, pontuação, instituição ou ordem de autoria. Não fundimos esses registros automaticamente: a comissão precisa dizer qual código é o oficial.
+
+| Título repetido | Códigos | O que o PDF fez |
+|---|---|---|
+| HIV em mulheres ≥ 40 anos | `03.13` / `03.14` | atribuiu só `03.14` |
+| Micobactéria em células-tronco (microscopia) | `03.17` / `05.13` | atribuiu só `03.17` |
+| Micobactéria em células-tronco (modulação) | `03.22` / `05.16` | atribuiu só `03.22` |
+| Esquistossomose em Capitão Andrade | `03.33` / `03.34` | atribuiu só `03.34` |
+| Fisioterapia domiciliar (Kawan) | `06.02` / `06.03` | atribuiu **os dois** |
+| Fisioterapia domiciliar (Ludimila) | `06.11` / `06.12` | atribuiu só `06.12` |
+| Dengue em Governador Valadares | `07.03` / `07.04` | atribuiu só `07.04` |
+
+O `03.35` (tuberculose e privação de liberdade) é um trabalho **sem par e sem atribuição** no PDF. Por isso a matriz mostra 7 sem atribuição: seis são os códigos duplicados e um é o `03.35`. A tela de Curadoria sinaliza os 14 registros com o selo **duplicata**; a decisão de manter, renomear ou excluir é da comissão.
+
+> O PDF também dá **duas avaliadoras ao par `06.02`/`06.03`**, que é o mesmo título. Isso não deve ser tratado como “dois avaliadores do mesmo trabalho” sem uma decisão: ou os dois códigos são apresentações distintas, ou uma atribuição precisa migrar para o `03.35`.
+
+**Cobertura:** a base tem 95 trabalhos únicos e o PDF tem 95 atribuições, mas a distribuição não é uma por trabalho (ver acima). Depois de resolver as duplicatas, confira a matriz e complete o segundo avaliador de cada trabalho, como pede o Regulamento.
 
 ### CSV
 
@@ -390,7 +408,7 @@ O app usa **React 19 + TypeScript + Vite 8 + Tailwind CSS v4 + lucide-react + Su
 - A demo usa `localStorage`: não sincroniza entre navegadores e pode ser apagada pelo usuário.
 - O modo Supabase exige aplicar a migração manualmente; sem `VITE_SUPABASE_URL` e `VITE_SUPABASE_ANON_KEY`, o app permanece em demonstração.
 - O ranking não corrige notas divergentes automaticamente: a comissão vê os dados e delibera (Regulamento, itens 5.4 e 5.5).
-- O PDF de atribuições cobre 95 trabalhos; se o banco tiver 102, os 7 restantes aparecem como “sem atribuição” até a comissão completar.
+- A planilha tem 102 registros, mas **95 títulos únicos**; seis códigos duplicados e o `03.35` aparecem sem atribuição. A comissão deve decidir o código oficial antes de consolidar.
 - Os e-mails dos avaliadores no seed foram inferidos dos nomes do PDF; confira-os na lista oficial.
 - O app não tem upload de arquivos, notificações por e-mail nem integração com o sistema acadêmico.
 

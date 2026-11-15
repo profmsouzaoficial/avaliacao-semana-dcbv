@@ -87,6 +87,8 @@ for (const trabalho of trabalhosOficiais) {
   codigos.add(trabalho.codigo);
 }
 
+const duplicatas = agruparDuplicatas(trabalhosOficiais);
+
 const atribuicoesPdf = lerAtribuicoesDoSeed();
 if (atribuicoesPdf.length !== 95) {
   console.error(`\nERRO: esperava 95 atribuições no seed; encontrei ${atribuicoesPdf.length}.\n`);
@@ -230,6 +232,13 @@ if (atribuicoesRemover.length) {
 console.log(`Trabalhos sem atribuição após a carga: ${semAtribuicao}`);
 console.log(`Com 1 avaliador: ${comUma}`);
 console.log(`Com 2+ avaliadores: ${comDuasOuMais}`);
+if (duplicatas.length) {
+  console.log(`Títulos repetidos (mesmo apresentador): ${duplicatas.length} grupos`);
+  for (const grupo of duplicatas) {
+    console.log(`  - ${grupo.map((t) => t.codigo).join(' / ')}`);
+  }
+  console.log('  A comissão deve escolher o código oficial; o script não funde registros.');
+}
 
 if (atribuicoesSemTrabalho.length) {
   console.log('\nATENÇÃO: atribuições sem trabalho correspondente:');
@@ -325,6 +334,28 @@ function paraLinhaBanco(trabalho) {
     link_pdf: trabalho.linkPdf,
     observacoes: trabalho.observacoes,
   };
+}
+
+function normalizarDuplicata(valor) {
+  return String(valor ?? '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim();
+}
+
+function agruparDuplicatas(trabalhos) {
+  const grupos = new Map();
+  for (const trabalho of trabalhos) {
+    const chave = `${normalizarDuplicata(trabalho.titulo)}|${normalizarDuplicata(trabalho.apresentador)}`;
+    const lista = grupos.get(chave) ?? [];
+    lista.push(trabalho);
+    grupos.set(chave, lista);
+  }
+  return [...grupos.values()]
+    .filter((lista) => lista.length > 1)
+    .sort((a, b) => a[0].codigo.localeCompare(b[0].codigo));
 }
 
 function lerAtribuicoesDoSeed() {

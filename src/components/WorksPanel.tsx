@@ -19,6 +19,7 @@ import {
   sessaoPorNumero,
 } from '../data/event';
 import { useApp } from '../context/AppContext';
+import { agruparDuplicatas } from '../lib/duplicates';
 import { contar } from '../lib/format';
 import { Badge } from './Badge';
 import { Button } from './Button';
@@ -74,6 +75,11 @@ export function WorksPanel({
   const categoriasAConfirmar = trabalhos.filter((t) =>
     t.observacoes.includes(MARCADOR_CATEGORIA_A_CONFIRMAR),
   ).length;
+  const duplicatas = useMemo(() => agruparDuplicatas(trabalhos), [trabalhos]);
+  const codigosDuplicados = useMemo(
+    () => new Set(duplicatas.flatMap((grupo) => grupo.map((t) => t.codigo))),
+    [duplicatas],
+  );
 
   const limparFiltros = () => {
     setBusca('');
@@ -196,6 +202,20 @@ export function WorksPanel({
         </div>
       )}
 
+      {duplicatas.length > 0 && (
+        <div className="flex items-start gap-2 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-[11px] leading-relaxed text-rose-900">
+          <span className="mt-0.5 h-2 w-2 shrink-0 rounded-full bg-rose-500" />
+          <p>
+            <strong>{contar(duplicatas.length, 'título aparece', 'títulos aparecem')} em dois códigos.</strong>{' '}
+            A planilha oficial repete o mesmo trabalho com códigos diferentes:{' '}
+            {duplicatas.map((grupo) => grupo.map((t) => t.codigo).join(' / ')).join(' · ')}. O PDF
+            usa um código na maioria dos pares, usa os dois em 06.02/06.03 e não registra 03.35.
+            Não fundimos os registros: confirme com a comissão qual código é o oficial antes de
+            avaliar e consolidar.
+          </p>
+        </div>
+      )}
+
       {filtrados.length === 0 ? (
         <div className="card px-5 py-12 text-center">
           <FileSpreadsheet className="mx-auto h-8 w-8 text-ink-muted" />
@@ -264,6 +284,11 @@ export function WorksPanel({
                         <td className="max-w-[420px] px-4 py-2.5">
                           <div className="flex items-center gap-2">
                             <span className="font-mono text-[10px] font-bold text-brand-700">{trabalho.codigo}</span>
+                            {codigosDuplicados.has(trabalho.codigo) && (
+                              <Badge tom="rose" className="scale-90">
+                                duplicata
+                              </Badge>
+                            )}
                             {trabalho.nivel !== 'outro' && (
                               <Badge tom={trabalho.nivel === 'graduacao' ? 'brand' : 'neutral'} className="scale-90">
                                 {trabalho.nivel === 'graduacao'
@@ -351,6 +376,11 @@ export function WorksPanel({
                     <div className="min-w-0">
                       <div className="flex flex-wrap items-center gap-1.5">
                         <span className="font-mono text-[10px] font-bold text-brand-700">{trabalho.codigo}</span>
+                        {codigosDuplicados.has(trabalho.codigo) && (
+                          <Badge tom="rose" className="scale-90">
+                            duplicata
+                          </Badge>
+                        )}
                         <Badge tom={atribuidas === 0 ? 'rose' : atribuidas === 1 ? 'amber' : 'green'} className="scale-90">
                           {atribuidas}/2
                         </Badge>
