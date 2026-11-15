@@ -314,7 +314,17 @@ atribuicoes_pdf as (
   select count(*)::int as n
   from public.atribuicoes at
   join public.avaliadores a on a.id = at.avaliador_id
-  where lower(a.email) in (select lower(email) from lista_pdf)
+  where exists (
+    select 1
+    from lista_pdf l
+    join public.trabalhos t on t.id = at.trabalho_id
+    where lower(l.email) = lower(a.email)
+      and (
+        (t.codigo = l.codigo
+         and (l.codigo <> '07.04' or t.titulo ilike '%dengue%'))
+        or (l.codigo = '07.04' and t.codigo = '07.03' and t.titulo ilike '%dengue%')
+      )
+  )
 ),
 sem_avaliador as (
   select count(*)::int as n
