@@ -101,6 +101,39 @@ Se o login autenticar mas retornar “não cadastrado como membro”, confira se
 e-mail de `avaliadores.email` é **exatamente** o mesmo do Auth (o app compara
 sem diferenciar maiúsculas/minúsculas).
 
+### Criar os 18 acessos de uma vez (opcional)
+
+O SQL não consegue definir senha do Auth: a senha é criada pela Admin API ou
+pelo Dashboard, não por `insert into auth.users`. Para os avaliadores, existe um
+script local que cria as contas que faltam e redefine as existentes com
+**senha = e-mail**:
+
+```bash
+npm run auth:senhas                  # confere, sem alterar nada
+npm run auth:senhas -- --aplicar     # cria/redefine
+```
+
+Antes, coloque no `.env.local` (ignorado pelo git):
+
+```dotenv
+SUPABASE_URL=https://SEU-PROJETO.supabase.co
+SUPABASE_SERVICE_ROLE_KEY=sb_secret_SUA_CHAVE
+```
+
+A chave `service_role`/secret **nunca** vai para o Vercel, para o bundle ou para
+o repositório; o script roda apenas na sua máquina. O modo padrão considera
+perfis ativos com `papel = 'avaliador'` e **não mexe na senha dos masters**. Para
+incluí-los, use `--incluir-masters`.
+
+> **Isso é desaconselhado em produção aberta.** O e-mail é visível para os
+> membros autenticados; quem souber o e-mail de outro avaliador pode entrar na
+> conta dele. A comissão precisa aceitar esse risco. O app também não tem tela
+> de troca de senha; a senha continua sendo administrada no Supabase.
+
+Também é possível fazer manualmente: **Authentication > Users > Add user** para
+cada e-mail, com a senha igual ao e-mail e **Auto Confirm User** marcado. O
+script só automatiza esses 18 cliques.
+
 ## 4. Cadastrar os demais membros
 
 Há dois caminhos:
@@ -110,6 +143,10 @@ Há dois caminhos:
   correspondente em **Authentication > Users**. No primeiro login, o vínculo
   será feito pelo e-mail.
 - **Pelo SQL:** insira os registros em `avaliadores` e crie os usuários do Auth.
+
+Se a política da comissão for **senha = e-mail**, depois de cadastrar o perfil
+basta rodar `npm run auth:senhas -- --aplicar` de novo: o script encontra os
+perfis ativos que ainda não têm conta e cria as contas que faltam.
 
 Um membro inativo mantém o histórico, mas não recebe novas atribuições e não
 consegue entrar (o app encerra a sessão com mensagem explicativa).

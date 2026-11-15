@@ -113,10 +113,36 @@ Os dados da demo ficam no `localStorage` **daquele navegador**. O menu do perfil
 3. Reinicie o `npm run dev`.
 4. Entre com o e-mail e a senha criados no Supabase Auth.
 
-> **Não há senha padrão.** O seed do banco cria o perfil da presidência, mas não
-> cria credenciais. Defina a senha ao criar o usuário em **Authentication >
+> **Não há senha padrão no código.** O seed do banco cria o perfil da presidência,
+> mas não cria credenciais. Defina a senha ao criar o usuário em **Authentication >
 > Users**; para um usuário existente, use a opção de redefinir senha no mesmo
 > painel. A chave anon e a senha do Postgres não são a senha do app.
+
+#### Política opcional: senha inicial = e-mail
+
+Se a comissão decidir que cada avaliador vai entrar com o **próprio e-mail como
+senha**, o script [`scripts/criar_usuarios_avaliadores.mjs`](scripts/criar_usuarios_avaliadores.mjs)
+cria/redefine as contas no Auth. Ele é **modo conferência por padrão**:
+
+```bash
+npm run auth:senhas                  # só mostra o que faria
+npm run auth:senhas -- --aplicar     # aplica de verdade
+```
+
+O script lê `SUPABASE_SERVICE_ROLE_KEY` (ou `SUPABASE_SECRET_KEY`) do
+`.env.local`. Essa chave é **secreta**: não use o prefixo `VITE_`, não a coloque
+no Vercel e não a envie ao navegador. O `service_role` só deve existir na sua
+máquina.
+
+> **Risco real:** e-mail é um identificador público. O app mostra os e-mails dos
+> membros ativos para qualquer pessoa autenticada; na prática, um avaliador pode
+> tentar entrar na conta de outro. Use essa política apenas se aceitar o risco e
+> preferir a facilidade. Para um evento aberto, prefira senha temporária
+> individual e troca no primeiro acesso.
+
+O script considera apenas perfis ativos com `papel = 'avaliador'`; a presidência
+fica de fora para não trocar a senha do master. Para incluir também os masters,
+acrescente `--incluir-masters`. Rode o seed dos avaliadores antes.
 
 O prefixo `VITE_` **não é uma senha**: é só a marca do Vite para o que pode ser embutido no bundle. A chave anon/publishable é pública por design, e o RLS protege os dados. O build injeta apenas URL e chave pública; ele recusa a `service_role`. Sem essas variáveis, o app abre em demonstração — útil para conhecer o fluxo sem tocar no banco. Se o schema ainda não estiver aplicado, a tela de login mostra o aviso e o caminho para corrigir.
 
@@ -211,11 +237,14 @@ O arquivo [`supabase/seed_avaliadores.sql`](supabase/seed_avaliadores.sql) cadas
 
 > **Confira os e-mails antes de rodar.** O PDF não traz e-mails; eles foram inferidos dos nomes. Se algum estiver errado, corrija no SQL **antes** de executar. O vínculo é por e-mail, não por nome.
 
-O SQL não cria usuários do Auth. Para cada avaliador, crie o usuário em **Supabase → Authentication → Users**, com o mesmo e-mail, marcando **Auto Confirm User**. Sem isso, o perfil existe, mas a pessoa não consegue entrar.
+O SQL não cria usuários do Auth. Sem conta no Auth, o perfil existe, mas a pessoa não consegue entrar. Há dois caminhos:
+
+- **manual:** crie cada usuário em **Supabase → Authentication → Users**, com o mesmo e-mail, marcando **Auto Confirm User**;
+- **opcional, senha = e-mail:** rode o script da seção anterior (`npm run auth:senhas -- --aplicar`), que cria/redefine as contas dos perfis ativos.
 
 ### Segurança em uma frase
 
-A chave publishable/anon é pública; **a proteção vem do RLS**. Nunca coloque a `service_role` no front-end.
+A chave publishable/anon é pública; **a proteção vem do RLS**. Nunca coloque a `service_role` no front-end. A única exceção é o script local de criação de usuários, que roda na sua máquina e lê a chave do `.env.local` — ela não vai para o bundle nem para o Vercel.
 
 ---
 
@@ -276,6 +305,8 @@ supabase/
   seed_presidente.sql   bootstrap do primeiro master
   seed_avaliadores.sql  18 avaliadores + 95 atribuições do PDF + relatório
   README.md             implantação, Auth, RLS e problemas comuns
+scripts/
+  criar_usuarios_avaliadores.mjs  cria/redefine contas do Auth (dry-run por padrão)
 src/
   data/
     event.ts            evento, sessões, categorias, links oficiais
