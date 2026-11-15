@@ -1,4 +1,4 @@
-import { CATEGORIAS, SESSOES, categoriaPorNumero, sessaoPorNumero } from '../data/event';
+import { CATEGORIAS, SESSOES, categoriaDeTrabalho, sessaoPorNumero } from '../data/event';
 import type { NivelParticipante, RankingItem, Trabalho } from '../types';
 
 export const COLUNAS_TRABALHOS = [
@@ -280,7 +280,7 @@ export function rankingParaCsv(ranking: RankingItem[]): string {
         item.trabalho.codigo,
         item.trabalho.titulo,
         sessaoPorNumero(item.trabalho.sessao).nome,
-        categoriaPorNumero(item.trabalho.categoria).nome,
+        categoriaDeTrabalho(item.trabalho).nome,
         item.trabalho.apresentador,
         item.media !== null ? item.media.toFixed(2).replace('.', ',') : '',
         ...[1, 2, 3, 4, 5].map((id) =>

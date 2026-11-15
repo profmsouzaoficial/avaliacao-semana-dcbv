@@ -196,6 +196,27 @@ Na aba **Distribuição**, o botão **Importar lista** aceita uma lista `e-mail;
 
 > **Cobertura do PDF:** o arquivo recebido tem 18 avaliadores únicos e 95 atribuições, mas **apenas um avaliador por trabalho**. O Regulamento e o app pedem dois. Use **Completar distribuição** ou importe uma segunda lista; o relatório do SQL mostra quantos trabalhos ainda têm só um.
 
+### Carregar a base oficial de 102 trabalhos
+
+O banco de produção começa apenas com os 20 trabalhos da demonstração. Para carregar a lista completa do parecer e as atribuições do PDF:
+
+```bash
+npm run dados:importar              # confere o plano, sem gravar
+npm run dados:importar -- --aplicar # grava trabalhos e atribuições
+```
+
+O script é **idempotente** e não apaga trabalhos nem avaliações:
+
+- lê `supabase/dados/trabalhos_oficiais.json`, gerado a partir da planilha oficial do parecer (102 aprovados; o `02.02` reprovado fica fora);
+- preenche **apresentador, autoria, instituição e sessão** dos trabalhos que já existem;
+- insere os **82 trabalhos que faltavam**, mantendo os 20 da demo;
+- aplica as **95 atribuições** do PDF e remove apenas a atribuição legada `07.03 → Ione Matos` quando o `07.04` já existe e não há avaliação registrada;
+- não altera categorias existentes nem notas.
+
+> **Categoria metodológica:** nem o parecer nem o formulário oficial informam a categoria 1–5. Os trabalhos novos entram com **categoria 1** e a observação “Categoria metodológica a confirmar”. A interface mostra **A confirmar** e a Curadoria tem um filtro próprio para revisar esses 82 registros antes da avaliação. A nota não depende da categoria; ela contextualiza o barema.
+
+**Cobertura:** o PDF cobre 95 dos 102 trabalhos. Os 7 sem atribuição são `03.13`, `03.33`, `03.35`, `05.13`, `05.16`, `06.11` e `07.03`; em vários casos o PDF atribuiu o código gêmeo (`03.14`, `03.34`, `07.04`). Confira a matriz e complete o segundo avaliador.
+
 ### CSV
 
 O botão **Modelo** baixa um CSV com cabeçalho e uma linha de exemplo. Colunas aceitas:
@@ -236,7 +257,14 @@ Passo a passo, incluindo o bootstrap da primeira presidência, em [`supabase/REA
 
 ### Carga dos avaliadores do PDF
 
-O arquivo [`supabase/seed_avaliadores.sql`](supabase/seed_avaliadores.sql) cadastra os 18 avaliadores únicos e importa as 95 atribuições do PDF. Ele é **idempotente** (pode rodar de novo) e termina com um relatório de cobertura. O caso `07.04`/`07.03` é resolvido pelo código e pelo título “dengue”, para não atribuir a pessoa ao trabalho errado.
+O arquivo [`supabase/seed_avaliadores.sql`](supabase/seed_avaliadores.sql) cadastra os 18 avaliadores únicos e importa as 95 atribuições do PDF. Ele é **idempotente** (pode rodar de novo) e termina com um relatório de cobertura. O caso `07.04`/`07.03` é resolvido pelo código e pelo título “dengue”; depois da carga oficial, prefira o `07.04` e remova a atribuição legada do `07.03` (o script `dados:importar` faz isso quando não há avaliação registrada).
+
+Ordem recomendada em uma base nova:
+
+1. rode `supabase/migrations/0001_init.sql`;
+2. rode `supabase/seed_avaliadores.sql` para criar os perfis (as atribuições que ainda não têm trabalho ficam pendentes);
+3. rode `npm run dados:importar -- --aplicar` para inserir os 102 trabalhos e completar as 95 atribuições;
+4. rode `seed_avaliadores.sql` de novo apenas se quiser o relatório de cobertura no SQL Editor.
 
 > **Confira os e-mails antes de rodar.** O PDF não traz e-mails; eles foram inferidos dos nomes. Se algum estiver errado, corrija no SQL **antes** de executar. O vínculo é por e-mail, não por nome.
 
@@ -307,9 +335,12 @@ supabase/
     0001_init.sql       esquema, RLS e 20 trabalhos de demonstração
   seed_presidente.sql   bootstrap do primeiro master
   seed_avaliadores.sql  18 avaliadores + 95 atribuições do PDF + relatório
+  dados/
+    trabalhos_oficiais.json  102 trabalhos aprovados (código, título, autoria, sessão)
   README.md             implantação, Auth, RLS e problemas comuns
 scripts/
   criar_usuarios_avaliadores.mjs  cria/redefine contas do Auth (dry-run por padrão)
+  importar_dados_oficiais.mjs     importa os 102 trabalhos e as 95 atribuições
 src/
   data/
     event.ts            evento, sessões, categorias, links oficiais

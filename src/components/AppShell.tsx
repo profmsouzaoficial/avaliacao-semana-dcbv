@@ -64,6 +64,10 @@ export function AppShell({ aba, onAba, children }: AppShellProps) {
             {disponiveis.map((item) => {
               const Icone = item.icone;
               const ativo = aba === item.id;
+              const rotulo =
+                item.id === 'avaliar' && membro.papel === 'presidente'
+                  ? 'Minhas avaliações'
+                  : item.rotulo;
               return (
                 <button
                   key={item.id}
@@ -75,7 +79,7 @@ export function AppShell({ aba, onAba, children }: AppShellProps) {
                   )}
                 >
                   <Icone className={classNames('h-4 w-4', ativo ? 'text-accent-400' : 'text-brand-300')} />
-                  {item.rotulo}
+                  {rotulo}
                   {ativo && (
                     <span className="absolute inset-x-2 bottom-0 h-[2px] rounded-full bg-accent-400" />
                   )}
@@ -114,6 +118,10 @@ export function AppShell({ aba, onAba, children }: AppShellProps) {
           {disponiveis.map((item) => {
             const Icone = item.icone;
             const ativo = aba === item.id;
+            const rotulo =
+              item.id === 'avaliar' && membro.papel === 'presidente'
+                ? 'Minhas avaliações'
+                : item.rotulo;
             return (
               <button
                 key={item.id}
@@ -125,7 +133,7 @@ export function AppShell({ aba, onAba, children }: AppShellProps) {
                 )}
               >
                 <Icone className={classNames('h-3.5 w-3.5', ativo ? 'text-accent-400' : 'text-brand-300')} />
-                {item.rotulo}
+                {rotulo}
                 {ativo && <span className="absolute inset-x-2 bottom-0 h-[2px] rounded-full bg-accent-400" />}
               </button>
             );

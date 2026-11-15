@@ -48,6 +48,9 @@ No **SQL Editor**, cole e execute o conteúdo inteiro de
 A migração também semeia os **20 trabalhos** usados na demonstração, com os
 títulos exatamente como aparecem no parecer oficial. Autoria, apresentador,
 instituição e período ficam em branco de propósito: o parecer não os informa.
+A base completa de **102 trabalhos aprovados** entra pelo script
+`npm run dados:importar -- --aplicar`, que lê a planilha oficial e preenche
+autoria, apresentador e instituição.
 
 ### 2.1 Carga dos avaliadores e das atribuições do PDF
 
@@ -76,11 +79,32 @@ trabalho correspondente.
 PDF fica com 1 de 2; a segunda atribuição deve ser feita em **Curadoria →
 Distribuição** (botão **Completar distribuição**) ou por **Importar lista**.
 
+### 2.2 Carga dos 102 trabalhos oficiais
+
+Depois de criar os perfis, rode na máquina do administrador:
+
+```bash
+npm run dados:importar              # conferência, não grava
+npm run dados:importar -- --aplicar # grava
+```
+
+O script lê [`dados/trabalhos_oficiais.json`](dados/trabalhos_oficiais.json),
+insere os 82 trabalhos que faltam, preenche os campos de autoria dos 20 já
+existentes e aplica as 95 atribuições do PDF. Ele **não apaga** trabalhos,
+avaliações ou atribuições; a única remoção é a atribuição legada
+`07.03 → Ione Matos`, feita somente quando o `07.04` existe e não há avaliação
+registrada.
+
+> **Categoria:** o parecer e o formulário não informam a categoria metodológica
+> (1–5). Os 82 trabalhos novos entram com categoria 1 e a observação
+> “Categoria metodológica a confirmar”; o app mostra **A confirmar** e a
+> Curadoria oferece o filtro correspondente. Revise antes da avaliação.
+
 **Caso 07.04 / 07.03:** o PDF chama de `07.04` o trabalho de dengue que o seed
-da demo chama de `07.03`. O SQL tenta primeiro `07.04`; se ele não existir — ou
-se existir mas o título não contiver “dengue” — tenta `07.03`, também pelo
-título. Se nenhum dos dois for o trabalho de dengue, ele **não atribui** e mostra
-o código no relatório. Confira o título e ajuste na matriz se necessário.
+da demo chama de `07.03`. O seed tenta primeiro `07.04`; se ele não existir — ou
+se existir mas o título não contiver “dengue” — tenta `07.03`. Depois da carga
+oficial, o script mantém `07.04` e retira a atribuição legada do `07.03` quando
+seguro. Confira a matriz se algum código ficar sem atribuição.
 
 ## 3. Criar o primeiro acesso
 
@@ -204,7 +228,7 @@ cadastrar; notas e pareceres ficam restritos à banca.
 ## 6. Verificação rápida
 
 ```sql
--- Quantos trabalhos existem na base? (20 no seed de demo; 102 no banco real)
+-- Quantos trabalhos existem na base? (20 no seed de demo; 102 após a carga oficial)
 select count(*) as trabalhos from public.trabalhos;
 
 -- A presidência e o vínculo com auth.users.
@@ -239,7 +263,7 @@ base; ele não duplica atribuições.
 | `new row violates row-level security policy` | ação sem papel de presidência | entre com uma conta `papel = 'presidente'` e `ativo = true` |
 | `A comissão precisa de ao menos uma presidência ativa` | tentativa de remover a última presidência | cadastre outra presidência antes |
 | `relation "public.avaliadores" does not exist` | migração não rodou neste projeto/banco | confira a URL do projeto e rode `0001_init.sql` antes do seed |
-| Seed diz “95 atribuições” mas o app mostra menos | faltam trabalhos com aqueles códigos | importe o CSV completo e rode o seed de novo; veja os códigos ausentes no relatório |
+| Seed diz “95 atribuições” mas o app mostra menos | faltam trabalhos com aqueles códigos | rode `npm run dados:importar -- --aplicar`; veja os códigos ausentes no relatório |
 
 ## 8. Deploy
 

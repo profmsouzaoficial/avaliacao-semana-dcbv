@@ -4,6 +4,7 @@ import {
   Award,
   BarChart3,
   CheckCircle2,
+  ClipboardCheck,
   ClipboardList,
   Download,
   FileText,
@@ -30,9 +31,10 @@ type AbaPainel = 'ranking' | 'sessoes' | 'cobertura';
 
 interface DashboardProps {
   onAbrirCuradoria: () => void;
+  onAbrirAvaliar: () => void;
 }
 
-export function Dashboard({ onAbrirCuradoria }: DashboardProps) {
+export function Dashboard({ onAbrirCuradoria, onAbrirAvaliar }: DashboardProps) {
   const { trabalhos, atribuicoes, avaliacoes, membros, notificar } = useApp();
   const [aba, setAba] = useState<AbaPainel>('ranking');
   const [detalhe, setDetalhe] = useState<RankingItem | null>(null);
@@ -97,6 +99,13 @@ export function Dashboard({ onAbrirCuradoria }: DashboardProps) {
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
+          <Button
+            variante="secondary"
+            onClick={onAbrirAvaliar}
+            icone={<ClipboardCheck className="h-4 w-4" />}
+          >
+            Minhas avaliações
+          </Button>
           <Button
             variante="secondary"
             onClick={exportar}

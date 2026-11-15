@@ -255,7 +255,7 @@ export function LoginScreen() {
                       <button
                         type="button"
                         onClick={() => setMostrarSenha((v) => !v)}
-                        className="absolute right-2.5 top-1/2 rounded-lg p-1.5 text-ink-muted transition hover:bg-paper-deep hover:text-ink"
+                        className="absolute right-2.5 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-lg p-0 text-ink-muted transition hover:bg-paper-deep hover:text-ink"
                         aria-label={mostrarSenha ? 'Ocultar senha' : 'Mostrar senha'}
                       >
                         {mostrarSenha ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}

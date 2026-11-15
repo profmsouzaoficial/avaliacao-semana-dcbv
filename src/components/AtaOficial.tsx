@@ -1,6 +1,6 @@
 import type { Membro, RankingItem, ResumoAvaliador } from '../types';
 import { CRITERIOS } from '../data/rubric';
-import { EVENTO, SESSOES, categoriaPorNumero } from '../data/event';
+import { EVENTO, SESSOES, categoriaDeTrabalho } from '../data/event';
 import { contar, formatarDataHora, formatarDataLonga, formatarNota } from '../lib/format';
 
 export interface DadosAta {
@@ -160,7 +160,7 @@ export function AtaOficial({ dados }: { dados: DadosAta }) {
                       <>
                         <div className="text-[7.9pt] font-medium leading-snug">{item.trabalho.titulo}</div>
                         <div className="text-[6.8pt] text-[#6f7d78]">
-                          {categoriaPorNumero(item.trabalho.categoria).curto}
+                          {categoriaDeTrabalho(item.trabalho).curto}
                           {item.votosMencao > 0 ? ` · ${contar(item.votosMencao, 'indicação', 'indicações')}` : ''}
                         </div>
                       </>

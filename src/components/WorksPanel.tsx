@@ -11,7 +11,13 @@ import {
   X,
 } from 'lucide-react';
 import type { Trabalho } from '../types';
-import { CATEGORIAS, SESSOES, categoriaPorNumero, sessaoPorNumero } from '../data/event';
+import {
+  CATEGORIAS,
+  MARCADOR_CATEGORIA_A_CONFIRMAR,
+  SESSOES,
+  categoriaDeTrabalho,
+  sessaoPorNumero,
+} from '../data/event';
 import { useApp } from '../context/AppContext';
 import { contar } from '../lib/format';
 import { Badge } from './Badge';
@@ -37,13 +43,19 @@ export function WorksPanel({
   const { trabalhos, atribuicoes, avaliacoes } = useApp();
   const [busca, setBusca] = useState('');
   const [sessaoFiltro, setSessaoFiltro] = useState<'todas' | number>('todas');
-  const [categoriaFiltro, setCategoriaFiltro] = useState<'todas' | number>('todas');
+  const [categoriaFiltro, setCategoriaFiltro] = useState<'todas' | number | 'a-confirmar'>('todas');
 
   const filtrados = useMemo(() => {
     const termo = busca.trim().toLowerCase();
     return trabalhos
       .filter((t) => (sessaoFiltro === 'todas' ? true : t.sessao === sessaoFiltro))
-      .filter((t) => (categoriaFiltro === 'todas' ? true : t.categoria === categoriaFiltro))
+      .filter((t) =>
+        categoriaFiltro === 'todas'
+          ? true
+          : categoriaFiltro === 'a-confirmar'
+            ? t.observacoes.includes(MARCADOR_CATEGORIA_A_CONFIRMAR)
+            : t.categoria === categoriaFiltro,
+      )
       .filter(
         (t) =>
           !termo ||
@@ -59,6 +71,9 @@ export function WorksPanel({
     avaliacoes.some((a) => a.trabalhoId === t.id && a.concluida),
   ).length;
   const temFiltro = busca.trim().length > 0 || sessaoFiltro !== 'todas' || categoriaFiltro !== 'todas';
+  const categoriasAConfirmar = trabalhos.filter((t) =>
+    t.observacoes.includes(MARCADOR_CATEGORIA_A_CONFIRMAR),
+  ).length;
 
   const limparFiltros = () => {
     setBusca('');
@@ -110,11 +125,18 @@ export function WorksPanel({
             <select
               value={categoriaFiltro}
               onChange={(e) =>
-                setCategoriaFiltro(e.target.value === 'todas' ? 'todas' : Number(e.target.value))
+                setCategoriaFiltro(
+                  e.target.value === 'todas'
+                    ? 'todas'
+                    : e.target.value === 'a-confirmar'
+                      ? 'a-confirmar'
+                      : Number(e.target.value),
+                )
               }
               className="h-9 w-full rounded-xl border border-line bg-paper-light px-2.5 text-[11px] text-ink outline-none focus:border-brand-400 focus:bg-white focus:ring-4 focus:ring-brand-100 sm:w-[230px]"
             >
               <option value="todas">Todas as categorias</option>
+              <option value="a-confirmar">A confirmar ({categoriasAConfirmar})</option>
               {CATEGORIAS.map((c) => (
                 <option key={c.numero} value={c.numero}>
                   {c.numero} · {c.curto}
@@ -161,6 +183,18 @@ export function WorksPanel({
           </span>
         </div>
       </div>
+
+      {categoriasAConfirmar > 0 && (
+        <div className="flex items-start gap-2 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-[11px] leading-relaxed text-amber-900">
+          <span className="mt-0.5 h-2 w-2 shrink-0 rounded-full bg-amber-500" />
+          <p>
+            <strong>{contar(categoriasAConfirmar, 'trabalho está', 'trabalhos estão')} com categoria a confirmar.</strong>{' '}
+            O parecer e o formulário oficiais não informam a categoria metodológica. Use o filtro
+            “A confirmar” e edite cada trabalho antes da avaliação; a nota não é afetada, mas o
+            contexto pedagógico do barema fica incompleto.
+          </p>
+        </div>
+      )}
 
       {filtrados.length === 0 ? (
         <div className="card px-5 py-12 text-center">
@@ -224,7 +258,7 @@ export function WorksPanel({
                       (a) => a.trabalhoId === trabalho.id && a.concluida,
                     ).length;
                     const sessao = sessaoPorNumero(trabalho.sessao);
-                    const categoria = categoriaPorNumero(trabalho.categoria);
+                    const categoria = categoriaDeTrabalho(trabalho);
                     return (
                       <tr key={trabalho.id} className="group border-b border-line-soft/70 transition hover:bg-brand-50/30">
                         <td className="max-w-[420px] px-4 py-2.5">
@@ -325,7 +359,7 @@ export function WorksPanel({
                       <p className="mt-1 text-[12px] font-semibold leading-snug text-ink">{trabalho.titulo}</p>
                       <div className="mt-1 flex items-center gap-1.5 text-[9.5px] text-ink-muted">
                         <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: sessao.cor }} />
-                        {String(sessao.numero).padStart(2, '0')} · {sessao.curto} · {categoriaPorNumero(trabalho.categoria).curto}
+                        {String(sessao.numero).padStart(2, '0')} · {sessao.curto} · {categoriaDeTrabalho(trabalho).curto}
                       </div>
                       {trabalho.apresentador && (
                         <p className="mt-1 text-[10px] text-ink-muted">{trabalho.apresentador}</p>

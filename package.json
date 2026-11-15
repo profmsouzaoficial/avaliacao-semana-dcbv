@@ -10,7 +10,8 @@
     "preview": "vite preview --port=4173 --host=0.0.0.0",
     "lint": "tsc --noEmit",
     "test:e2e": "node e2e/smoke.mjs",
-    "auth:senhas": "node scripts/criar_usuarios_avaliadores.mjs"
+    "auth:senhas": "node scripts/criar_usuarios_avaliadores.mjs",
+    "dados:importar": "node scripts/importar_dados_oficiais.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.119.0",

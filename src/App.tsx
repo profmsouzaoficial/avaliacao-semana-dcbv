@@ -51,7 +51,10 @@ function Conteudo() {
         {aba === 'avaliar' && <EvaluationWorkspace onAbrirPainel={() => setAba('painel')} />}
         {aba === 'painel' &&
           (presidente ? (
-            <Dashboard onAbrirCuradoria={() => setAba('curadoria')} />
+            <Dashboard
+              onAbrirCuradoria={() => setAba('curadoria')}
+              onAbrirAvaliar={() => setAba('avaliar')}
+            />
           ) : (
             <EvaluationWorkspace onAbrirPainel={() => setAba('painel')} />
           ))}

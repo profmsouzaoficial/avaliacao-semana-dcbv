@@ -1,4 +1,4 @@
-import type { CategoriaTrabalho, SessaoTematica } from '../types';
+import type { CategoriaTrabalho, SessaoTematica, Trabalho } from '../types';
 
 export const EVENTO = {
   nome: 'I Semana do DCBV',
@@ -76,6 +76,17 @@ export const SESSOES: SessaoTematica[] = [
   },
 ];
 
+export const MARCADOR_CATEGORIA_A_CONFIRMAR = 'Categoria metodológica a confirmar';
+
+/** Categoria exibida quando a planilha oficial não informa a classificação. */
+export const CATEGORIA_A_CONFIRMAR: CategoriaTrabalho = {
+  numero: 0,
+  nome: 'Categoria a confirmar',
+  curto: 'A confirmar',
+  orientacaoMetodo:
+    'O parecer e o formulário oficiais não informam a categoria metodológica. A comissão deve confirmar a categoria na Curadoria antes de usar este contexto na avaliação.',
+};
+
 export const CATEGORIAS: CategoriaTrabalho[] = [
   {
     numero: 1,
@@ -119,7 +130,17 @@ export function sessaoPorNumero(numero: number): SessaoTematica {
 }
 
 export function categoriaPorNumero(numero: number): CategoriaTrabalho {
+  if (numero === 0) return CATEGORIA_A_CONFIRMAR;
   return CATEGORIAS.find((c) => c.numero === numero) ?? CATEGORIAS[0];
+}
+
+/** Resolve a categoria que deve aparecer na interface para um trabalho. */
+export function categoriaDeTrabalho(
+  trabalho: Pick<Trabalho, 'categoria' | 'observacoes'>,
+): CategoriaTrabalho {
+  return trabalho.observacoes.includes(MARCADOR_CATEGORIA_A_CONFIRMAR)
+    ? CATEGORIA_A_CONFIRMAR
+    : categoriaPorNumero(trabalho.categoria);
 }
 
 export const APLICACAO = {

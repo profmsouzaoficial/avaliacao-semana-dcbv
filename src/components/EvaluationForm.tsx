@@ -19,7 +19,7 @@ import {
 } from 'lucide-react';
 import type { Avaliacao, StatusTrabalho, Trabalho } from '../types';
 import { CRITERIOS, calcularNota, nivelPorValor, rotuloNota, totalRespondidos } from '../data/rubric';
-import { categoriaPorNumero, sessaoPorNumero } from '../data/event';
+import { categoriaDeTrabalho, sessaoPorNumero } from '../data/event';
 import { useApp } from '../context/AppContext';
 import { classNames, contar, formatarDataHora, formatarNota } from '../lib/format';
 import { mensagemDeErro } from '../lib/supabase';
@@ -110,7 +110,7 @@ export function EvaluationForm({ trabalho, onProximo, temProximo }: EvaluationFo
     indicacaoMencao;
 
   const sessao = sessaoPorNumero(trabalho.sessao);
-  const categoria = categoriaPorNumero(trabalho.categoria);
+  const categoria = categoriaDeTrabalho(trabalho);
 
   const statusAtual: StatusTrabalho['status'] = concluida
     ? 'concluida'
@@ -359,7 +359,7 @@ export function EvaluationForm({ trabalho, onProximo, temProximo }: EvaluationFo
                     key={criterio.id}
                     criterio={criterio}
                     valor={notas[String(criterio.id)]}
-                    categoria={trabalho.categoria}
+                    categoria={categoria.numero}
                     aberto={abertoId === criterio.id}
                     onAlternar={() => setAbertoId((atual) => (atual === criterio.id ? null : criterio.id))}
                     onSelecionar={(valor) => {

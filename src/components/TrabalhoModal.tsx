@@ -1,7 +1,12 @@
 import { useEffect, useState } from 'react';
 import { AlertTriangle, Check, Save } from 'lucide-react';
 import type { NivelParticipante, Trabalho } from '../types';
-import { CATEGORIAS, SESSOES, categoriaPorNumero } from '../data/event';
+import {
+  CATEGORIAS,
+  MARCADOR_CATEGORIA_A_CONFIRMAR,
+  SESSOES,
+  categoriaPorNumero,
+} from '../data/event';
 import { useApp } from '../context/AppContext';
 import { contar } from '../lib/format';
 import { mensagemDeErro } from '../lib/supabase';
@@ -52,10 +57,12 @@ export function TrabalhoModal({ aberto, trabalho, onFechar }: TrabalhoModalProps
   const [form, setForm] = useState<Formulario>(VAZIO);
   const [erro, setErro] = useState<string | null>(null);
   const [salvando, setSalvando] = useState(false);
+  const [confirmouCategoria, setConfirmouCategoria] = useState(false);
 
   useEffect(() => {
     if (!aberto) return;
     setErro(null);
+    setConfirmouCategoria(false);
     if (trabalho) {
       setForm({
         codigo: trabalho.codigo,
@@ -114,6 +121,13 @@ export function TrabalhoModal({ aberto, trabalho, onFechar }: TrabalhoModalProps
       setErro('Selecione a categoria do trabalho.');
       return;
     }
+    const categoriaProvisoria = Boolean(
+      trabalho?.observacoes.includes(MARCADOR_CATEGORIA_A_CONFIRMAR),
+    );
+    if (categoriaProvisoria && !confirmouCategoria) {
+      setErro('Confirme que revisou a categoria metodológica antes de salvar.');
+      return;
+    }
 
     setSalvando(true);
     try {
@@ -132,7 +146,12 @@ export function TrabalhoModal({ aberto, trabalho, onFechar }: TrabalhoModalProps
         nivel: form.nivel,
         resumo: form.resumo.trim(),
         linkPdf: form.linkPdf.trim(),
-        observacoes: form.observacoes.trim(),
+        observacoes: categoriaProvisoria
+          ? form.observacoes
+              .replace(MARCADOR_CATEGORIA_A_CONFIRMAR, '')
+              .replace(/^\s*[:\-–]\s*/, '')
+              .trim()
+          : form.observacoes.trim(),
       });
       notificar(
         trabalho ? `Trabalho ${codigo} atualizado.` : `Trabalho ${codigo} cadastrado.`,
@@ -277,6 +296,22 @@ export function TrabalhoModal({ aberto, trabalho, onFechar }: TrabalhoModalProps
             <strong className="text-ink-soft">O que observar nesta categoria:</strong>{' '}
             {categoriaPorNumero(form.categoria).orientacaoMetodo}
           </div>
+        )}
+
+        {trabalho?.observacoes.includes(MARCADOR_CATEGORIA_A_CONFIRMAR) && (
+          <label className="flex items-start gap-2.5 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2.5 text-[10.5px] leading-relaxed text-amber-900">
+            <input
+              type="checkbox"
+              checked={confirmouCategoria}
+              onChange={(e) => setConfirmouCategoria(e.target.checked)}
+              className="mt-0.5 h-3.5 w-3.5 shrink-0 accent-amber-600"
+            />
+            <span>
+              <strong>Categoria a confirmar.</strong> O formulário oficial não informou a
+              categoria metodológica. Revise a opção acima e marque esta caixa para remover o
+              aviso ao salvar.
+            </span>
+          </label>
         )}
 
         <div className="grid gap-3 sm:grid-cols-2">

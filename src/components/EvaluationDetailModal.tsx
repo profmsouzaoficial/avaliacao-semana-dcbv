@@ -1,7 +1,7 @@
 import { Award, CheckCircle2, CircleDashed, Clock3, Info, MessageSquareText } from 'lucide-react';
 import type { Avaliacao, RankingItem } from '../types';
 import { CRITERIOS, nivelPorValor } from '../data/rubric';
-import { categoriaPorNumero, sessaoPorNumero } from '../data/event';
+import { categoriaDeTrabalho, sessaoPorNumero } from '../data/event';
 import { useApp } from '../context/AppContext';
 import { classNames, formatarDataHora, formatarNota } from '../lib/format';
 import { Badge } from './Badge';
@@ -19,7 +19,7 @@ export function EvaluationDetailModal({ item, onFechar }: EvaluationDetailModalP
   if (!item) return null;
   const { trabalho } = item;
   const sessao = sessaoPorNumero(trabalho.sessao);
-  const categoria = categoriaPorNumero(trabalho.categoria);
+  const categoria = categoriaDeTrabalho(trabalho);
   const atribuicoesTrabalho = atribuicoes.filter((a) => a.trabalhoId === trabalho.id);
   const avaliacoesTrabalho = avaliacoes.filter((a) => a.trabalhoId === trabalho.id);
   const membroPorId = (id: string) => membros.find((m) => m.id === id);
