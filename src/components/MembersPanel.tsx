@@ -239,7 +239,7 @@ export function MembersPanel({ onNovo, onEditar, onExcluir }: MembersPanelProps)
       <div className="flex items-start gap-2 rounded-2xl border border-line bg-paper-light px-4 py-3 text-[10.5px] leading-relaxed text-ink-muted">
         <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0 text-accent-600" />
         <p>
-          O papel <strong>presidência</strong> vê todos os trabalhos, avaliações e a ata. O papel{' '}
+          O papel <strong>presidência / master</strong> vê todos os trabalhos, avaliações, faz atribuições e a ata. O papel{' '}
           <strong>avaliador(a)</strong> vê apenas os trabalhos atribuídos a si. Um membro inativo
           mantém o histórico, mas não recebe novas atribuições.
         </p>

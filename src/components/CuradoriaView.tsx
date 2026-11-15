@@ -257,7 +257,12 @@ export function CuradoriaView() {
           onExcluir={setMembroParaExcluir}
         />
       )}
-      {aba === 'distribuicao' && <DistributionMatrix onEditarTrabalho={abrirEditarTrabalho} />}
+      {aba === 'distribuicao' && (
+        <DistributionMatrix
+          onEditarTrabalho={abrirEditarTrabalho}
+          onNovoMembro={abrirNovoMembro}
+        />
+      )}
 
       <input
         ref={arquivoRef}

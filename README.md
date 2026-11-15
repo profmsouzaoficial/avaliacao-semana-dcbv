@@ -14,8 +14,10 @@ O app foi construído a partir do convite do Prof. Dr. Márcio Luís Moreira de 
 |---|---|
 | ![Tela de entrada](docs/capturas/01-login.png) | ![Painel de consolidação](docs/capturas/02-painel.png) |
 | **Entrada e escolha de perfil** | **Painel com ranking, cobertura e ata** |
-| ![Avaliação de um banner](docs/capturas/09-avaliacao.png) | ![Ata em PDF](docs/capturas/11-ata-pagina-1.png) |
-| **Cinco critérios, nota automática e feedback** | **Ata de consolidação em A4** |
+| ![Avaliação de um banner](docs/capturas/09-avaliacao.png) | ![Importação de atribuições](docs/capturas/12-importacao.png) |
+| **Cinco critérios, nota automática e feedback** | **Importação de atribuições com prévia e validação** |
+| ![Ata em PDF](docs/capturas/11-ata-pagina-1.png) | |
+| **Ata de consolidação em A4** | |
 
 Mais telas em [`docs/capturas/`](docs/capturas/): menções por sessão, cobertura, curadoria,
 distribuição, regulamento e versão mobile. A minuta de exemplo está em
@@ -28,7 +30,7 @@ distribuição, regulamento e versão mobile. A minuta de exemplo está em
 | Para quem | O que resolve |
 |---|---|
 | **Avaliador(a)** | Vê só os banners atribuídos a si; pontua cinco critérios de 0 a 4; escreve pontos fortes, sugestões e parecer; indica (ou não) menção honrosa com justificativa; salva rascunho e retoma depois. |
-| **Presidência / Comissão Científica** | Cadastra trabalhos e membros, importa o CSV do parecer, distribui avaliações, acompanha cobertura, vê ranking por sessão, exporta CSV e gera a ata em PDF. |
+| **Presidência / master** | Cadastra trabalhos e membros, importa o CSV do parecer, distribui avaliações (inclusive por lista), acompanha cobertura, vê ranking por sessão, exporta CSV e gera a ata em PDF. Pode haver mais de um master. |
 | **Quem só quer conhecer** | Entra no **modo demonstração**, sem senha e sem tocar no Supabase. |
 
 O app **não** decide aprovação, **não** substitui o parecer da comissão e **não** envia e-mails. A ata é uma minuta de apoio, sujeita a revisão e assinatura.
@@ -133,7 +135,7 @@ O build roda `tsc --noEmit` antes do Vite. A saída fica em `dist/`.
 
 | Papel | Vê trabalhos | Vê avaliações | Gerencia cadastros |
 |---|---|---|---|
-| **Presidência** | todos | todas | sim |
+| **Presidência / master** | todos | todas | sim |
 | **Avaliador(a)** | só os atribuídos a si | só as suas | não |
 | **Anônimo** | nada | nada | nada |
 
@@ -147,11 +149,23 @@ O app não compara senhas no cliente: quem autentica é o Supabase Auth. A senha
 
 ## 5. Curadoria: trabalhos, membros e distribuição
 
-A aba **Curadoria** (só presidência) tem três passos:
+A aba **Curadoria** (só presidência/master) tem três passos:
 
 1. **Traga os trabalhos** — importe o CSV do parecer ou cadastre manualmente. O código `NN.NN` é a chave; importar de novo atualiza os existentes.
 2. **Cadastre a banca** — nome, e-mail, titulação, instituição, papel e status. No Supabase, cada pessoa precisa de um usuário no Auth com o mesmo e-mail; o vínculo é automático no primeiro login.
 3. **Distribua as avaliações** — clique nas células da matriz. Cada trabalho deve ter dois avaliadores. O botão **Completar distribuição** sugere avaliadores que ainda não estão naquele trabalho.
+
+### Importar atribuições em massa
+
+Na aba **Distribuição**, o botão **Importar lista** aceita uma lista `e-mail;código` (ou `código;e-mail`), uma por linha. É útil para carregar as 95 atribuições do PDF de uma vez ou para acrescentar o segundo avaliador sem clicar célula por célula.
+
+- A prévia mostra **novas**, **já existentes** e **problemas** antes de gravar.
+- E-mails precisam estar cadastrados em **Membros**; códigos precisam existir em **Trabalhos**. A importação **não cria** membros nem trabalhos silenciosamente.
+- Linhas com problema bloqueiam o botão **Aplicar**; corrija a lista e analise de novo.
+- O botão **Cadastrar avaliador** abre o mesmo formulário de membro. Ele cria o perfil, **não a senha**: o usuário do Auth é criado no Supabase, com o mesmo e-mail.
+- O aviso “trabalho com 2+” não impede a importação; serve para você perceber se está duplicando uma atribuição existente.
+
+> **Cobertura do PDF:** o arquivo recebido tem 18 avaliadores únicos e 95 atribuições, mas **apenas um avaliador por trabalho**. O Regulamento e o app pedem dois. Use **Completar distribuição** ou importe uma segunda lista; o relatório do SQL mostra quantos trabalhos ainda têm só um.
 
 ### CSV
 
@@ -191,6 +205,14 @@ O esquema está em [`supabase/migrations/0001_init.sql`](supabase/migrations/000
 
 Passo a passo, incluindo o bootstrap da primeira presidência, em [`supabase/README.md`](supabase/README.md).
 
+### Carga dos avaliadores do PDF
+
+O arquivo [`supabase/seed_avaliadores.sql`](supabase/seed_avaliadores.sql) cadastra os 18 avaliadores únicos e importa as 95 atribuições do PDF. Ele é **idempotente** (pode rodar de novo) e termina com um relatório de cobertura.
+
+> **Confira os e-mails antes de rodar.** O PDF não traz e-mails; eles foram inferidos dos nomes. Se algum estiver errado, corrija no SQL **antes** de executar. O vínculo é por e-mail, não por nome.
+
+O SQL não cria usuários do Auth. Para cada avaliador, crie o usuário em **Supabase → Authentication → Users**, com o mesmo e-mail, marcando **Auto Confirm User**. Sem isso, o perfil existe, mas a pessoa não consegue entrar.
+
 ### Segurança em uma frase
 
 A chave publishable/anon é pública; **a proteção vem do RLS**. Nunca coloque a `service_role` no front-end.
@@ -224,7 +246,7 @@ O smoke test:
 
 - sobe o Vite se ainda não houver servidor em `http://127.0.0.1:3000`;
 - entra na demo como presidência;
-- confere curadoria e modais;
+- confere curadoria, modais e a importação de atribuições por lista;
 - entra como avaliador, pontua os 5 critérios, escreve feedback e conclui;
 - volta como presidência e confere a avaliação no painel;
 - abre a ata;
@@ -248,27 +270,33 @@ PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/caminho/para/chrome npm run test:e2e
 ## 10. Estrutura do projeto
 
 ```text
+supabase/
+  migrations/
+    0001_init.sql       esquema, RLS e 20 trabalhos de demonstração
+  seed_presidente.sql   bootstrap do primeiro master
+  seed_avaliadores.sql  18 avaliadores + 95 atribuições do PDF + relatório
+  README.md             implantação, Auth, RLS e problemas comuns
 src/
   data/
-    event.ts        evento, sessões, categorias, links oficiais
-    rubric.ts       os 5 critérios, níveis e cálculo da nota
-    demo.ts         20 trabalhos e 3 perfis de demonstração
+    event.ts            evento, sessões, categorias, links oficiais
+    rubric.ts           os 5 critérios, níveis e cálculo da nota
+    demo.ts             20 trabalhos e 3 perfis de demonstração
   lib/
-    scoring.ts      ranking, desempate, cobertura, resumos
-    csv.ts          importação/exportação CSV
-    repository.ts   DemoRepository (localStorage) e SupabaseRepository
-    supabase.ts     cliente e mensagens de erro
-    format.ts       datas, notas, contagem com concordância
+    scoring.ts          ranking, desempate, cobertura, resumos
+    csv.ts              importação/exportação CSV de trabalhos
+    assignmentImport.ts parser e validação da lista e-mail;código
+    repository.ts       DemoRepository (localStorage) e SupabaseRepository
+    supabase.ts         cliente e mensagens de erro
+    format.ts           datas, notas, contagem com concordância
   context/
-    AppContext.tsx  estado global, login, salvamento e toasts
-  components/       telas e componentes de interface
-  types.ts          contratos de dados
-supabase/
-  migrations/0001_init.sql
-  seed_presidente.sql
-  README.md
+    AppContext.tsx      estado global, login, salvamento e toasts
+  components/           telas e componentes de interface
+  types.ts              contratos de dados
 e2e/
-  smoke.mjs
+  smoke.mjs             fluxo principal em modo demonstração
+docs/
+  capturas/             telas do app
+  ata-exemplo.pdf       minuta de exemplo
 ```
 
 O app usa **React 19 + TypeScript + Vite 8 + Tailwind CSS v4 + lucide-react + Supabase JS**. As fontes são Fraunces (títulos) e Plus Jakarta Sans (texto), via Google Fonts.
@@ -283,7 +311,7 @@ O app usa **React 19 + TypeScript + Vite 8 + Tailwind CSS v4 + lucide-react + Su
 
 - **Cinco critérios, não quinze.** Menos itens, mais leitura; cada nível tem descritor observável.
 - **Nada de nota livre.** A nota é a soma dos critérios; o feedback é qualitativo.
-- **Duas avaliações por trabalho.** A prévia com uma avaliação é sinalizada; não vira cobertura.
+- **Duas avaliações por trabalho.** A prévia com uma avaliação é sinalizada; não vira cobertura. O PDF recebido traz só uma por trabalho; a segunda é completada na curadoria ou por lista.
 - **Menção honrosa é indicação, não nota.** O avaliador justifica; a comissão delibera.
 - **Destaque formativo é pedagogia, não regra.** Não cria uma nova categoria no Regulamento.
 - **Ata é minuta.** O app não assina, não publica e não substitui a deliberação.
@@ -297,6 +325,8 @@ O app usa **React 19 + TypeScript + Vite 8 + Tailwind CSS v4 + lucide-react + Su
 - A demo usa `localStorage`: não sincroniza entre navegadores e pode ser apagada pelo usuário.
 - O modo Supabase exige aplicar a migração manualmente; sem `VITE_SUPABASE_URL` e `VITE_SUPABASE_ANON_KEY`, o app permanece em demonstração.
 - O ranking não corrige notas divergentes automaticamente: a comissão vê os dados e delibera (Regulamento, itens 5.4 e 5.5).
+- O PDF de atribuições cobre 95 trabalhos; se o banco tiver 102, os 7 restantes aparecem como “sem atribuição” até a comissão completar.
+- Os e-mails dos avaliadores no seed foram inferidos dos nomes do PDF; confira-os na lista oficial.
 - O app não tem upload de arquivos, notificações por e-mail nem integração com o sistema acadêmico.
 
 ---

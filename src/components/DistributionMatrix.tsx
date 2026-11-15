@@ -5,6 +5,8 @@ import {
   Filter,
   Loader2,
   Search,
+  Upload,
+  UserPlus,
   Users,
   Wand2,
   X,
@@ -16,17 +18,20 @@ import { mensagemDeErro } from '../lib/supabase';
 import { classNames, contar, iniciais } from '../lib/format';
 import { Badge } from './Badge';
 import { Button } from './Button';
+import { AssignmentImportModal } from './AssignmentImportModal';
 
 interface DistributionMatrixProps {
   onEditarTrabalho: (trabalho: Trabalho) => void;
+  onNovoMembro: () => void;
 }
 
-export function DistributionMatrix({ onEditarTrabalho }: DistributionMatrixProps) {
-  const { trabalhos, membros, atribuicoes, avaliacoes, atribuir, desatribuir, notificar } = useApp();
+export function DistributionMatrix({ onEditarTrabalho, onNovoMembro }: DistributionMatrixProps) {
+  const { trabalhos, membros, atribuicoes, avaliacoes, atribuir, desatribuir, notificar, membro } = useApp();
   const [busca, setBusca] = useState('');
   const [sessaoFiltro, setSessaoFiltro] = useState<'todas' | number>('todas');
   const [ocupados, setOcupados] = useState<Set<string>>(new Set());
   const [distribuindo, setDistribuindo] = useState(false);
+  const [importandoLista, setImportandoLista] = useState(false);
 
   const avaliadores = useMemo(
     () => membros.filter((m) => m.ativo).sort((a, b) => a.ordem - b.ordem || a.nome.localeCompare(b.nome)),
@@ -57,6 +62,9 @@ export function DistributionMatrix({ onEditarTrabalho }: DistributionMatrixProps
 
   const totalAtribuicoes = atribuicoes.length;
   const semAtribuicao = trabalhos.filter((t) => !atribuicoes.some((a) => a.trabalhoId === t.id)).length;
+  const comUmAvaliador = trabalhos.filter(
+    (t) => atribuicoes.filter((a) => a.trabalhoId === t.id).length === 1,
+  ).length;
 
   const alternar = async (trabalhoId: string, avaliadorId: string) => {
     const chave = `${trabalhoId}:${avaliadorId}`;
@@ -193,12 +201,35 @@ export function DistributionMatrix({ onEditarTrabalho }: DistributionMatrixProps
           </div>
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <Badge tom={semAtribuicao > 0 ? 'amber' : 'green'} ponto>
+          <Badge tom={semAtribuicao > 0 ? 'rose' : 'green'} ponto>
             {semAtribuicao} sem atribuição
+          </Badge>
+          <Badge tom={comUmAvaliador > 0 ? 'amber' : 'green'} ponto>
+            {comUmAvaliador} com 1 de 2
           </Badge>
           <Badge tom="neutral">
             {contar(totalAtribuicoes, 'atribuição', 'atribuições')} · {contar(filtrados.length, 'trabalho', 'trabalhos')}
           </Badge>
+          {membro?.papel === 'presidente' && (
+            <>
+              <Button
+                variante="secondary"
+                tamanho="sm"
+                onClick={() => setImportandoLista(true)}
+                icone={<Upload className="h-3.5 w-3.5" />}
+              >
+                Importar lista
+              </Button>
+              <Button
+                variante="secondary"
+                tamanho="sm"
+                onClick={onNovoMembro}
+                icone={<UserPlus className="h-3.5 w-3.5" />}
+              >
+                Novo avaliador
+              </Button>
+            </>
+          )}
           <Button
             variante="secondary"
             tamanho="sm"
@@ -363,6 +394,15 @@ export function DistributionMatrix({ onEditarTrabalho }: DistributionMatrixProps
           </div>
         </div>
       )}
+
+      <AssignmentImportModal
+        aberto={importandoLista}
+        onFechar={() => setImportandoLista(false)}
+        onNovoMembro={() => {
+          setImportandoLista(false);
+          onNovoMembro();
+        }}
+      />
     </div>
   );
 }

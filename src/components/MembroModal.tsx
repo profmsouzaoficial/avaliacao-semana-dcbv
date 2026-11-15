@@ -250,8 +250,8 @@ export function MembroModal({ aberto, membro, onFechar }: MembroModalProps) {
                 },
                 {
                   valor: 'presidente' as Papel,
-                  titulo: 'Presidência',
-                  descricao: 'Vê todos os dados, faz a curadoria e gera a ata.',
+                  titulo: 'Presidência / master',
+                  descricao: 'Vê todos os dados, faz atribuições, curadoria e gera a ata.',
                   icone: UserCog,
                 },
               ] as const

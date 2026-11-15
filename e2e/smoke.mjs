@@ -103,6 +103,23 @@ async function main() {
     await page.waitForSelector('text=Novo membro');
     await page.screenshot({ path: join(ARTIFACTS, '02-curadoria-membros.png'), fullPage: true });
 
+    // 2b. Importação de atribuições por lista (presidência/master)
+    await page.getByRole('button', { name: /Distribuição/ }).click();
+    await page.getByRole('button', { name: /Importar lista/ }).click();
+    await page.waitForSelector('text=Importar atribuições');
+    const listaAtribuicoes = page.locator('textarea').last();
+    await listaAtribuicoes.fill('avaliador1@demo.local;04.01\nlinha sem formato');
+    await page.waitForSelector('text=Corrija estes pontos antes de aplicar');
+    await page.waitForTimeout(500);
+    await page.screenshot({ path: join(ARTIFACTS, '07-importacao.png'), fullPage: true });
+    await listaAtribuicoes.fill('avaliador1@demo.local;04.01');
+    await page.getByRole('button', { name: /^Aplicar/ }).click();
+    await page.waitForSelector('[role="status"]');
+    assert.match(await page.locator('[role="status"]').innerText(), /atribuição importada/);
+    await page.getByRole('button', { name: /Novo avaliador/ }).click();
+    await page.waitForSelector('text=Novo membro da banca');
+    await page.getByRole('button', { name: 'Cancelar' }).click();
+
     // 3. Avaliador preenche os cinco critérios no nível 3
     await page.goto(`${BASE}/?demo=avaliador-demo-1`, { waitUntil: 'networkidle' });
     const secoes = page.locator('section[id^="criterio-"]');
