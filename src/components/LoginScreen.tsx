@@ -96,7 +96,7 @@ export function LoginScreen() {
                 Governador Valadares
               </span>
               <span className="rounded-full border border-white/15 bg-white/[0.06] px-3 py-1.5 text-[11.5px] font-medium text-brand-50">
-                102 trabalhos · 7 sessões
+                94 trabalhos · 7 sessões
               </span>
             </div>
           </div>
