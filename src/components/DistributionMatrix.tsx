@@ -69,8 +69,8 @@ export function DistributionMatrix({ onEditarTrabalho, onNovoMembro }: Distribut
 
   const totalAtribuicoes = atribuicoes.length;
   const semAtribuicao = trabalhos.filter((t) => !atribuicoes.some((a) => a.trabalhoId === t.id)).length;
-  const comUmAvaliador = trabalhos.filter(
-    (t) => atribuicoes.filter((a) => a.trabalhoId === t.id).length === 1,
+  const comCobertura = trabalhos.filter(
+    (t) => atribuicoes.filter((a) => a.trabalhoId === t.id).length >= MINIMO_AVALIACOES_POR_TRABALHO,
   ).length;
 
   const alternar = async (trabalhoId: string, avaliadorId: string) => {
@@ -213,8 +213,8 @@ export function DistributionMatrix({ onEditarTrabalho, onNovoMembro }: Distribut
           <Badge tom={semAtribuicao > 0 ? 'rose' : 'green'} ponto>
             {semAtribuicao} sem atribuição
           </Badge>
-          <Badge tom={comUmAvaliador > 0 ? 'amber' : 'green'} ponto>
-            {comUmAvaliador} com 1 de 2
+          <Badge tom={comCobertura === trabalhos.length ? 'green' : 'amber'} ponto>
+            {comCobertura} com cobertura mínima
           </Badge>
           <Badge tom="neutral">
             {contar(totalAtribuicoes, 'atribuição', 'atribuições')} · {contar(filtrados.length, 'trabalho', 'trabalhos')}
@@ -306,7 +306,7 @@ export function DistributionMatrix({ onEditarTrabalho, onNovoMembro }: Distribut
                       key={trabalho.id}
                       className={classNames(
                         'group border-b border-line-soft/70 transition',
-                        atribuidas === 0 ? 'bg-rose-100/30' : atribuidas === 1 ? 'bg-accent-50/50' : 'hover:bg-brand-50/30',
+                        atribuidas === 0 ? 'bg-rose-100/30' : 'hover:bg-brand-50/30',
                       )}
                     >
                       <td className="sticky left-0 z-10 bg-inherit px-4 py-2">
@@ -328,12 +328,10 @@ export function DistributionMatrix({ onEditarTrabalho, onNovoMembro }: Distribut
                               'shrink-0 rounded-full px-1.5 py-0.5 text-[8px] font-bold',
                               atribuidas === 0
                                 ? 'bg-rose-500/15 text-rose-600'
-                                : atribuidas === 1
-                                  ? 'bg-accent-500/20 text-accent-700'
-                                  : 'bg-emerald-500/15 text-emerald-700',
+                                : 'bg-emerald-500/15 text-emerald-700',
                             )}
                           >
-                            {atribuidas}/2
+                            {atribuidas}/{MINIMO_AVALIACOES_POR_TRABALHO}
                           </span>
                         </div>
                         <button

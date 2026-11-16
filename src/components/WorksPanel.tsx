@@ -21,6 +21,7 @@ import {
 import { useApp } from '../context/AppContext';
 import { agruparDuplicatas } from '../lib/duplicates';
 import { contar } from '../lib/format';
+import { MINIMO_AVALIACOES_POR_TRABALHO } from '../lib/scoring';
 import { Badge } from './Badge';
 import { Button } from './Button';
 
@@ -326,7 +327,7 @@ export function WorksPanel({
                         <td className="px-3 py-2.5 text-center">
                           <div className="inline-flex flex-col items-center gap-0.5">
                             <Badge
-                              tom={atribuidas === 0 ? 'rose' : atribuidas === 1 ? 'amber' : 'green'}
+                              tom={atribuidas === 0 ? 'rose' : 'green'}
                               className="scale-90"
                             >
                               {contar(atribuidas, 'atribuída', 'atribuídas')}
@@ -378,8 +379,8 @@ export function WorksPanel({
                             duplicata
                           </Badge>
                         )}
-                        <Badge tom={atribuidas === 0 ? 'rose' : atribuidas === 1 ? 'amber' : 'green'} className="scale-90">
-                          {atribuidas}/2
+                        <Badge tom={atribuidas === 0 ? 'rose' : 'green'} className="scale-90">
+                          {atribuidas}/{MINIMO_AVALIACOES_POR_TRABALHO}
                         </Badge>
                         <span className="text-[9px] text-ink-muted">{contar(concluidas, 'concluída', 'concluídas')}</span>
                       </div>
