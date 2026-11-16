@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Guia rápido para os avaliadores — I Semana do DCBV</title>
+<style>
+  @page { size: A4; margin: 0; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #f4efe2; color: #1b2926; }
+  body { font-family: 'Lato', 'DejaVu Sans', sans-serif; font-size: 9.3pt; line-height: 1.43; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .page { width: 210mm; height: 297mm; overflow: hidden; position: relative; background: #f7f2e6; page-break-after: always; }
+  .page:last-child { page-break-after: auto; }
+  .page-inner { padding: 0 15mm 13mm; height: 100%; display: flex; flex-direction: column; }
+  .topline { height: 2.6mm; background: linear-gradient(90deg, #d97834 0%, #e5a15e 35%, #2f7d74 100%); }
+  header.masthead { background: #063c3b; color: #fbf7ec; padding: 8mm 15mm 7mm; display: flex; align-items: flex-start; justify-content: space-between; gap: 10mm; }
+  .brand { display: flex; align-items: center; gap: 4mm; }
+  .brand-mark { width: 15mm; height: 15mm; border: 1.1pt solid rgba(255,255,255,.55); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: Georgia, 'DejaVu Serif', serif; font-size: 19pt; color: #f2c187; line-height: 1; }
+  .brand-eyebrow { font-size: 7pt; letter-spacing: .19em; text-transform: uppercase; color: #a9d2c9; font-weight: 700; }
+  .brand-title { font-family: Georgia, 'DejaVu Serif', serif; font-size: 16.5pt; line-height: 1.06; margin-top: .8mm; letter-spacing: -.01em; }
+  .brand-sub { font-size: 7.4pt; color: #cfe4dc; margin-top: 1.4mm; letter-spacing: .045em; }
+  .masthead-tag { text-align: right; padding-top: 1.5mm; }
+  .masthead-tag .tag { display: inline-block; border: .75pt solid rgba(242,193,135,.6); color: #f2c187; border-radius: 999px; padding: 1.1mm 3.2mm; font-size: 6.7pt; font-weight: 700; letter-spacing: .15em; text-transform: uppercase; }
+  .masthead-tag .edition { margin-top: 3.5mm; font-size: 7.3pt; line-height: 1.45; color: #cfe4dc; }
+  .hero { padding: 7mm 0 4mm; display: flex; justify-content: space-between; gap: 9mm; align-items: flex-start; }
+  .hero-copy { max-width: 118mm; }
+  .eyebrow { font-size: 7.1pt; letter-spacing: .17em; text-transform: uppercase; color: #9a5a2c; font-weight: 700; }
+  h1 { font-family: Georgia, 'DejaVu Serif', serif; font-size: 26pt; line-height: 1.04; letter-spacing: -.025em; color: #083f3d; margin: 2mm 0 3mm; font-weight: 600; }
+  .lead { font-size: 10.1pt; line-height: 1.5; color: #40504c; max-width: 113mm; }
+  .qr-card { width: 43mm; background: #fffdf7; border: .8pt solid #ded4c0; border-radius: 3mm; padding: 3mm 3mm 2.5mm; text-align: center; flex: none; }
+  .qr-card img { width: 34mm; height: 34mm; display: block; margin: 0 auto; }
+  .qr-card .qr-label { margin-top: 1.7mm; font-size: 6.5pt; letter-spacing: .11em; text-transform: uppercase; color: #6b7873; font-weight: 700; }
+  .qr-card .qr-url { margin-top: .9mm; font-family: 'DejaVu Sans Mono', monospace; font-size: 5.9pt; color: #0d524e; word-break: break-all; line-height: 1.25; }
+  .fact-strip { display: flex; gap: 0; border-top: .8pt solid #d8cfbd; border-bottom: .8pt solid #d8cfbd; margin: 0 0 5mm; }
+  .fact { flex: 1; padding: 3.1mm 3.5mm 3.1mm 0; }
+  .fact + .fact { border-left: .8pt solid #d8cfbd; padding-left: 4mm; }
+  .fact .k { font-family: Georgia, 'DejaVu Serif', serif; font-size: 15pt; color: #0b504c; line-height: 1; }
+  .fact .v { margin-top: 1mm; font-size: 7.2pt; color: #5f6d68; letter-spacing: .025em; }
+  h2 { font-family: Georgia, 'DejaVu Serif', serif; font-size: 14.5pt; color: #0a4643; margin: 0 0 2.6mm; letter-spacing: -.012em; font-weight: 600; }
+  .section { margin-bottom: 4.5mm; }
+  .section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 5mm; margin-bottom: 2.8mm; }
+  .section-head .hint { font-size: 7.4pt; color: #7a827d; }
+  .steps { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 3mm; }
+  .step { background: #fffdf8; border: .8pt solid #ded5c3; border-radius: 2.4mm; padding: 3.6mm 3.8mm 3.4mm; }
+  .step .num { width: 7mm; height: 7mm; border-radius: 50%; background: #0b504c; color: #f7e4c8; font-family: Georgia, 'DejaVu Serif', serif; font-size: 9pt; display: flex; align-items: center; justify-content: center; }
+  .step h3 { font-size: 8.7pt; margin: 2.4mm 0 1.1mm; color: #173b37; letter-spacing: .01em; }
+  .step p { margin: 0; font-size: 8.1pt; line-height: 1.45; color: #52615c; }
+  .link-box { background: #063c3b; color: #f7f1e3; border-radius: 2.4mm; padding: 4mm 4.4mm; display: flex; align-items: center; justify-content: space-between; gap: 5mm; }
+  .link-box .label { font-size: 6.8pt; letter-spacing: .16em; text-transform: uppercase; color: #a9d2c9; font-weight: 700; }
+  .link-box .url { font-family: 'DejaVu Sans Mono', monospace; font-size: 9.2pt; margin-top: 1.2mm; color: #fff9ec; text-decoration: none; }
+  .link-box .note { font-size: 6.9pt; color: #cfe4dc; text-align: right; line-height: 1.4; }
+  .tip { border-left: 2.4pt solid #d97834; padding: 2.2mm 0 2.2mm 3.6mm; color: #4b5b56; font-size: 8.1pt; line-height: 1.45; }
+  .tip strong { color: #7a3e19; }
+  .mini-grid { display: grid; grid-template-columns: 1.2fr .8fr; gap: 5mm; align-items: start; }
+  .checklist { background: #fffdf8; border: .8pt solid #ded5c3; border-radius: 2.4mm; padding: 3.8mm 4mm; }
+  .checklist .item { display: flex; gap: 2.5mm; margin-bottom: 2.4mm; font-size: 8.1pt; color: #3d4d48; line-height: 1.4; }
+  .checklist .item:last-child { margin-bottom: 0; }
+  .box { width: 3.2mm; height: 3.2mm; border: .9pt solid #9b8f79; border-radius: .5mm; flex: none; margin-top: .6mm; }
+  .footer { position: absolute; left: 15mm; right: 15mm; bottom: 5mm; padding-top: 3mm; border-top: .7pt solid #d8cfbd; display: flex; justify-content: space-between; align-items: flex-end; gap: 5mm; color: #7a827d; font-size: 6.6pt; line-height: 1.4; }
+  .footer strong { color: #3f514b; font-weight: 700; }
+  .page-num { font-family: Georgia, 'DejaVu Serif', serif; font-size: 9pt; color: #0b504c; }
+  .divider-label { display: flex; align-items: center; gap: 3mm; margin: 2mm 0 3mm; color: #9a5a2c; font-size: 6.9pt; letter-spacing: .16em; text-transform: uppercase; font-weight: 700; }
+  .divider-label:after { content: ""; height: .7pt; background: #d8cfbd; flex: 1; }
+  /* page 2 */
+  .page2-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 6mm; border-bottom: .8pt solid #d8cfbd; padding-bottom: 3.2mm; margin-bottom: 4.2mm; }
+  .page2-head .kicker { font-size: 6.9pt; letter-spacing: .17em; text-transform: uppercase; color: #9a5a2c; font-weight: 700; }
+  .page2-head h2 { margin: 1.2mm 0 0; font-size: 19pt; }
+  .page2-head .aside { font-size: 7.2pt; color: #6e7c76; text-align: right; line-height: 1.4; }
+  table.rubric { width: 100%; border-collapse: collapse; background: #fffdf8; border: .8pt solid #ded5c3; border-radius: 2.4mm; overflow: hidden; }
+  table.rubric th { background: #0b504c; color: #fff9ec; font-size: 7.1pt; letter-spacing: .09em; text-transform: uppercase; text-align: left; padding: 2.2mm 2.6mm; font-weight: 700; }
+  table.rubric td { border-top: .7pt solid #e4dbca; padding: 2.15mm 2.6mm; vertical-align: top; font-size: 7.6pt; line-height: 1.38; color: #40504b; }
+  table.rubric tr:nth-child(even) td { background: #fcf8ee; }
+  table.rubric .crit { width: 43mm; color: #173b37; font-weight: 700; font-size: 7.8pt; }
+  table.rubric .pts { width: 13mm; text-align: center; font-family: Georgia, 'DejaVu Serif', serif; font-size: 9pt; color: #0b504c; white-space: nowrap; }
+  table.rubric .num { color: #b06a35; font-weight: 700; }
+  .levels { display: grid; grid-template-columns: repeat(5, 1fr); gap: 2mm; margin-top: 3mm; }
+  .level { border: .8pt solid #ded5c3; background: #fffdf8; border-radius: 2mm; padding: 2.5mm 2.2mm; text-align: center; }
+  .level .p { font-family: Georgia, 'DejaVu Serif', serif; font-size: 13pt; color: #0b504c; line-height: 1; }
+  .level .n { margin-top: 1.1mm; font-size: 7.1pt; font-weight: 700; color: #28443f; }
+  .level .d { margin-top: .8mm; font-size: 6.4pt; color: #77827c; line-height: 1.3; }
+  .level.zero { background: #f4eee1; }
+  .level.zero .p { color: #9a5a2c; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 4.5mm; margin-top: 4.6mm; }
+  .panel { background: #fffdf8; border: .8pt solid #ded5c3; border-radius: 2.4mm; padding: 3.6mm 3.8mm; }
+  .panel h3 { font-size: 8.9pt; color: #173b37; margin: 0 0 2mm; }
+  .panel p, .panel li { font-size: 7.8pt; line-height: 1.44; color: #4a5954; }
+  .panel p { margin: 0 0 1.8mm; }
+  .panel p:last-child { margin-bottom: 0; }
+  .panel ul { margin: 0; padding-left: 4mm; }
+  .panel li { margin-bottom: 1.4mm; }
+  .panel li:last-child { margin-bottom: 0; }
+  .panel .callout { background: #eef5ef; border-left: 2pt solid #2f7d74; padding: 2.2mm 2.6mm; border-radius: 0 1.4mm 1.4mm 0; color: #35544d; font-size: 7.6pt; margin-top: 1.6mm; }
+  .panel .warn { background: #fbf0e4; border-left: 2pt solid #d97834; padding: 2.2mm 2.6mm; border-radius: 0 1.4mm 1.4mm 0; color: #70472c; font-size: 7.6pt; margin-top: 1.6mm; }
+  .support { margin-top: 4.2mm; background: #063c3b; color: #f7f1e3; border-radius: 2.4mm; padding: 3.8mm 4.4mm; display: flex; justify-content: space-between; align-items: center; gap: 6mm; }
+  .support .t { font-family: Georgia, 'DejaVu Serif', serif; font-size: 11.5pt; color: #fff9ec; }
+  .support .s { font-size: 7.4pt; color: #cfe4dc; margin-top: 1mm; line-height: 1.4; }
+  .support .r { font-size: 7.1pt; color: #f2c187; text-align: right; line-height: 1.45; }
+</style>
+</head>
+<body>
+
+<!-- ================= PAGE 1 ================= -->
+<div class="page">
+  <div class="topline"></div>
+  <header class="masthead">
+    <div class="brand">
+      <div class="brand-mark">D</div>
+      <div>
+        <div class="brand-eyebrow">I Semana do DCBV · Bases da Saúde</div>
+        <div class="brand-title">Avaliação de pôsteres</div>
+        <div class="brand-sub">UFJF · Campus Avançado Governador Valadares · 16 a 19 de novembro de 2026</div>
+      </div>
+    </div>
+    <div class="masthead-tag">
+      <div class="tag">Guia rápido</div>
+      <div class="edition">para avaliadores<br>Comissão Científica</div>
+    </div>
+  </header>
+
+  <div class="page-inner">
+    <section class="hero">
+      <div class="hero-copy">
+        <div class="eyebrow">Bem-vindo(a) à banca</div>
+        <h1>Avaliar com clareza,<br>orientar com cuidado.</h1>
+        <p class="lead">Este guia resume o caminho no sistema e o que observar em cada critério. A avaliação é formativa: o parecer deve ajudar o estudante a entender o que já funciona e o que pode melhorar.</p>
+      </div>
+      <div class="qr-card">
+        <img src="guia-qr.png" alt="QR code para o sistema de avaliação">
+        <div class="qr-label">Acesse pelo celular</div>
+        <div class="qr-url">semana-dcbv.vercel.app</div>
+      </div>
+    </section>
+
+    <div class="fact-strip">
+      <div class="fact"><div class="k">5</div><div class="v">critérios · 20 pontos cada</div></div>
+      <div class="fact"><div class="k">0–100</div><div class="v">nota final do banner</div></div>
+      <div class="fact"><div class="k">1</div><div class="v">avaliação por banner</div></div>
+      <div class="fact" style="flex:1.35"><div class="k" style="font-size:12.2pt; padding-top:1.1mm">rascunho</div><div class="v">salve e volte quando precisar</div></div>
+    </div>
+
+    <section class="section">
+      <div class="section-head">
+        <h2>Entre no sistema</h2>
+        <span class="hint">Não é preciso instalar nada</span>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="num">1</div>
+          <h3>Abra o link</h3>
+          <p>Use o navegador do celular ou do computador. O sistema funciona nos dois.</p>
+        </div>
+        <div class="step">
+          <div class="num">2</div>
+          <h3>Faça o login</h3>
+          <p>Informe o e-mail cadastrado pela comissão e a senha inicial recebida. Em geral, a senha inicial é o próprio e-mail institucional.</p>
+        </div>
+        <div class="step">
+          <div class="num">3</div>
+          <h3>Veja seus banners</h3>
+          <p>“Minhas avaliações” mostra apenas os trabalhos atribuídos a você. Se algum não aparecer, avise a presidência antes de começar.</p>
+        </div>
+      </div>
+      <div class="link-box" style="margin-top:3mm">
+        <div>
+          <div class="label">Endereço do sistema</div>
+          <a class="url" href="https://semana-dcbv.vercel.app/">https://semana-dcbv.vercel.app/</a>
+        </div>
+        <div class="note">Aponte a câmera para o QR<br>ou digite o endereço.</div>
+      </div>
+    </section>
+
+    <section class="section" style="margin-bottom:4.5mm">
+      <div class="section-head">
+        <h2>O que você vai encontrar</h2>
+        <span class="hint">Tudo em uma tela</span>
+      </div>
+      <div class="tip">
+        <strong>Lista de trabalhos:</strong> código, título, sessão e status (pendente, rascunho ou concluída). Ao abrir um banner, você vê os dados do trabalho, o resumo e, quando disponível, o link do PDF.
+      </div>
+      <div class="tip" style="margin-top:2.6mm">
+        <strong>Ficha de avaliação:</strong> cinco critérios com níveis de 0 a 4, três campos de texto e a indicação opcional de menção honrosa. Você pode salvar como rascunho e continuar depois.
+      </div>
+    </section>
+
+    <div class="divider-label">Comece pela leitura, não pela nota</div>
+
+    <div class="mini-grid">
+      <div>
+        <h2 style="font-size:12.4pt; margin-bottom:1.8mm">Antes de pontuar</h2>
+        <p style="margin:0 0 2mm; font-size:8.4pt; color:#4a5954; line-height:1.48">Leia o resumo e, se houver, o PDF: observe se pergunta, método e resultados são compreensíveis para quem não participou da pesquisa. Considere a formação e a categoria.</p>
+      </div>
+      <div class="checklist">
+        <div class="item"><span class="box"></span><span>Li o resumo e o PDF, quando disponível.</span></div>
+        <div class="item"><span class="box"></span><span>Conferi a categoria e o nível do trabalho.</span></div>
+        <div class="item"><span class="box"></span><span>Anotei exemplos concretos para o feedback.</span></div>
+        <div class="item"><span class="box"></span><span>Reservei tempo para reler antes de concluir.</span></div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div><strong>I Semana do DCBV · Bases da Saúde</strong><br>Comissão Científica · Guia do avaliador · versão 1 · 15/11/2026</div>
+      <div style="text-align:right">semana-dcbv.vercel.app<br><span class="page-num">1 / 2</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= PAGE 2 ================= -->
+<div class="page">
+  <div class="topline"></div>
+  <div class="page-inner" style="padding-top:10mm">
+    <div class="page2-head">
+      <div>
+        <div class="kicker">Roteiro de avaliação</div>
+        <h2>Os cinco critérios</h2>
+      </div>
+      <div class="aside">Cada critério vale 20 pontos.<br>A nota final é a soma dos cinco.</div>
+    </div>
+
+    <table class="rubric">
+      <thead>
+        <tr><th>Critério</th><th>O que observar</th><th style="text-align:center">Pontos</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="crit"><span class="num">1.</span> Clareza e organização do pôster</td>
+          <td>Leitura à distância, hierarquia das informações, uso de figuras e tabelas, sequência lógica e legibilidade. O pôster conta uma história compreensível?</td>
+          <td class="pts">20</td>
+        </tr>
+        <tr>
+          <td class="crit"><span class="num">2.</span> Pergunta, objetivo e justificativa</td>
+          <td>A pergunta de pesquisa está explícita? O objetivo é coerente com ela? A justificativa mostra relevância científica, clínica ou social para a formação em saúde?</td>
+          <td class="pts">20</td>
+        </tr>
+        <tr>
+          <td class="crit"><span class="num">3.</span> Caminho metodológico adequado à categoria</td>
+          <td>O desenho, os participantes, os instrumentos e a análise são adequados à pergunta e à categoria? Limites e cuidados éticos aparecem? A categoria é contexto; ela não é uma nota separada.</td>
+          <td class="pts">20</td>
+        </tr>
+        <tr>
+          <td class="crit"><span class="num">4.</span> Diálogo entre ciências básicas e formação em saúde</td>
+          <td>O trabalho conecta mecanismos, dados ou conceitos das ciências básicas com a formação, a prática ou os desafios da saúde? As implicações estão explicadas?</td>
+          <td class="pts">20</td>
+        </tr>
+        <tr>
+          <td class="crit"><span class="num">5.</span> Apresentação oral e domínio do trabalho</td>
+          <td>Clareza na exposição, domínio do conteúdo, capacidade de responder a perguntas, uso do tempo e segurança sobre os limites do estudo.</td>
+          <td class="pts">20</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="levels">
+      <div class="level zero"><div class="p">0</div><div class="n">Não avaliável</div><div class="d">evidência insuficiente; explique no parecer</div></div>
+      <div class="level"><div class="p">1</div><div class="n">Iniciante</div><div class="d">5 pts · precisa de base</div></div>
+      <div class="level"><div class="p">2</div><div class="n">Em desenvolvimento</div><div class="d">10 pts · avançou, ainda incompleto</div></div>
+      <div class="level"><div class="p">3</div><div class="n">Adequado</div><div class="d">15 pts · atende ao esperado</div></div>
+      <div class="level"><div class="p">4</div><div class="n">Destaque</div><div class="d">20 pts · surpreende pela qualidade</div></div>
+    </div>
+
+    <div class="two-col">
+      <div class="panel">
+        <h3>Como escrever o parecer</h3>
+        <p><strong>Pontos fortes:</strong> cite 1 a 3 escolhas concretas que funcionaram. Exemplo: “A pergunta está clara e o fluxo do pôster conduz o leitor até os resultados”.</p>
+        <p><strong>Sugestões de melhoria:</strong> proponha ações específicas e viáveis. Exemplo: “Informar o número de participantes e revisar a legenda da Figura 2”.</p>
+        <p><strong>Parecer para a comissão:</strong> sintetize em 3 a 5 frases o que o trabalho mostra, o que sustenta a nota e o que poderia ser fortalecido. Evite rótulos genéricos.</p>
+        <div class="callout"><strong>Tom formativo:</strong> critique o trabalho, não a pessoa. Descreva o que você observou antes de dizer o que poderia ser diferente.</div>
+      </div>
+      <div class="panel">
+        <h3>Antes de concluir</h3>
+        <ul>
+          <li>Os <strong>cinco critérios</strong> têm um nível marcado. Sem isso, o sistema não libera a conclusão.</li>
+          <li>O <strong>rascunho</strong> pode ser salvo e retomado. Use-o se precisar reler o PDF ou conversar com a comissão.</li>
+          <li>Ao <strong>concluir</strong>, a avaliação fica disponível para a consolidação. Se precisar corrigir, use <strong>Reabrir avaliação</strong>; as notas e o texto são mantidos.</li>
+          <li>A <strong>menção honrosa</strong> é opcional. Se indicar, escreva uma justificativa de pelo menos 20 caracteres, com evidências do destaque.</li>
+        </ul>
+        <div class="warn"><strong>Não avaliável</strong> não é sinônimo de nota baixa. Use quando não houver evidência suficiente para julgar — por exemplo, resumo e PDF ausentes — e registre o motivo.</div>
+      </div>
+    </div>
+
+    <div class="two-col" style="margin-top:4mm">
+      <div class="panel">
+        <h3>Categoria “a confirmar”</h3>
+        <p>Se a categoria metodológica ainda estiver como <strong>a confirmar</strong>, avalie o caminho apresentado e registre a limitação no parecer. A categoria orienta o critério 3; ela não é pontuada à parte e não deve penalizar o estudante por uma pendência administrativa.</p>
+      </div>
+      <div class="panel">
+        <h3>Privacidade e conduta</h3>
+        <p>O parecer é lido pela comissão, não é uma devolutiva pública ao estudante nesta etapa. Não compartilhe seu login, não avalie trabalho de outra pessoa e declare à presidência qualquer conflito de interesse.</p>
+        <p style="margin-top:1.4mm"><strong>Dúvidas?</strong> Fale com a presidência da Comissão Científica antes de concluir. O sistema organiza a evidência; a decisão final é da comissão.</p>
+      </div>
+    </div>
+
+    <div class="support">
+      <div>
+        <div class="t">Precisa de ajuda?</div>
+        <div class="s">A presidência da comissão pode conferir seu cadastro, suas atribuições e redefinir o acesso.</div>
+      </div>
+      <div class="r">semana-dcbv.vercel.app<br>Guia do avaliador · 2026</div>
+    </div>
+
+    <div class="footer">
+      <div><strong>Universidade Federal de Juiz de Fora</strong><br>Campus Avançado Governador Valadares · Departamento de Ciências Básicas da Vida (DCBV)</div>
+      <div style="text-align:right">Documento de apoio à Comissão Científica<br><span class="page-num">2 / 2</span></div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
