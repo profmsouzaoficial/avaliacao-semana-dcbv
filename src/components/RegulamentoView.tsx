@@ -52,7 +52,7 @@ export function RegulamentoView() {
       <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <Ficha icone={<CalendarDays className="h-4 w-4" />} rotulo="Quando" valor={EVENTO.datas} detalhe="Avaliação presencial dos pôsteres" />
         <Ficha icone={<MapPin className="h-4 w-4" />} rotulo="Onde" valor="Campus GV — UFJF" detalhe={EVENTO.cidade} />
-        <Ficha icone={<Users className="h-4 w-4" />} rotulo="Quem avalia" valor="Doutores convidados" detalhe="Duas avaliações por trabalho" />
+        <Ficha icone={<Users className="h-4 w-4" />} rotulo="Quem avalia" valor="Doutores convidados" detalhe="Uma avaliação por trabalho" />
         <Ficha icone={<Target className="h-4 w-4" />} rotulo="Nota" valor="0 a 100" detalhe="5 critérios × 20 pontos" />
       </div>
 
@@ -130,7 +130,7 @@ export function RegulamentoView() {
                 <ul className="mt-1.5 space-y-1 text-[11px] leading-relaxed text-brand-900">
                   <li>• Clareza do pôster e do que foi feito.</li>
                   <li>• Coerência entre pergunta, método e categoria escolhida.</li>
-                  <li>• Diálogo entre ciência básica e formação em saúde.</li>
+                  <li>• Diálogo entre ciências básicas e ciências da saúde.</li>
                   <li>• Honestidade sobre limites e próximos passos.</li>
                 </ul>
               </div>
@@ -296,8 +296,8 @@ export function RegulamentoView() {
             <div className="mt-3 grid gap-3 sm:grid-cols-2">
               <Bloco
                 icone={<Users className="h-3.5 w-3.5" />}
-                titulo="Duas avaliações independentes"
-                texto="Cada trabalho deve receber duas avaliações concluídas. O painel só considera cobertura completa quando esse mínimo é atingido; rascunhos não contam."
+                titulo="Uma avaliação por trabalho"
+                texto="A Comissão Científica definiu uma avaliação concluída por trabalho nesta edição. O painel considera cobertura completa quando esse mínimo é atingido; rascunhos não contam."
               />
               <Bloco
                 icone={<Scale className="h-3.5 w-3.5" />}

@@ -16,6 +16,7 @@ import { SESSOES, sessaoPorNumero } from '../data/event';
 import { useApp } from '../context/AppContext';
 import { agruparDuplicatas } from '../lib/duplicates';
 import { mensagemDeErro } from '../lib/supabase';
+import { MINIMO_AVALIACOES_POR_TRABALHO } from '../lib/scoring';
 import { classNames, contar, iniciais } from '../lib/format';
 import { Badge } from './Badge';
 import { Button } from './Button';
@@ -101,9 +102,11 @@ export function DistributionMatrix({ onEditarTrabalho, onNovoMembro }: Distribut
       notificar('Cadastre ao menos um avaliador ativo antes de distribuir.', 'erro');
       return;
     }
+    const alvo = MINIMO_AVALIACOES_POR_TRABALHO;
+    const rotuloAlvo = alvo === 1 ? '1 avaliador' : `${alvo} avaliadores`;
     if (
       !window.confirm(
-        `Completar a distribuição até 2 avaliadores por trabalho?\n\nA presidência não entra automaticamente. Atribuições existentes serão mantidas.`,
+        `Completar a distribuição até ${rotuloAlvo} por trabalho?\n\nA presidência não entra automaticamente. Atribuições existentes serão mantidas.`,
       )
     ) {
       return;
@@ -124,7 +127,7 @@ export function DistributionMatrix({ onEditarTrabalho, onNovoMembro }: Distribut
         const atuais = atribuicoes.filter((a) => a.trabalhoId === trabalho.id);
         const idsAtuais = new Set(atuais.map((a) => a.avaliadorId));
         let total = atuais.length;
-        while (total < 2) {
+        while (total < alvo) {
           const escolhido = elegiveis
             .filter((m) => !idsAtuais.has(m.id))
             .sort(
@@ -154,7 +157,7 @@ export function DistributionMatrix({ onEditarTrabalho, onNovoMembro }: Distribut
       notificar(
         criadas > 0
           ? `${contar(criadas, 'atribuição criada', 'atribuições criadas')} para completar a cobertura.`
-          : 'Todos os trabalhos já têm 2 avaliações atribuídas.',
+          : `Todos os trabalhos já têm ${alvo === 1 ? '1 avaliador' : `${alvo} avaliadores`} atribuído${alvo === 1 ? '' : 's'}.`,
         criadas > 0 ? 'sucesso' : 'info',
       );
     } catch (e) {
@@ -253,8 +256,8 @@ export function DistributionMatrix({ onEditarTrabalho, onNovoMembro }: Distribut
           <span className="mt-0.5 h-2 w-2 shrink-0 rounded-full bg-rose-500" />
           <p>
             <strong>{contar(duplicatas.length, 'título aparece', 'títulos aparecem')} em dois códigos.</strong>{' '}
-            A matriz mantém os 14 registros; confirme com a comissão qual é o código oficial antes
-            de distribuir. O PDF usa os dois códigos em 06.02/06.03 e não registra 03.35.
+            A lista corrigida da comissão não deve ter títulos repetidos. Se esta mensagem aparecer,
+            confirme os códigos antes de distribuir.
           </p>
         </div>
       )}

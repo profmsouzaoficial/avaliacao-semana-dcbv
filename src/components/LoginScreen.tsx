@@ -113,7 +113,7 @@ export function LoginScreen() {
             <div className="hidden text-right sm:block">
               <div className="display text-3xl font-semibold text-accent-400">DCBV</div>
               <div className="text-[9px] font-bold uppercase tracking-[0.2em] text-brand-300">
-                desde 2026
+                desde 2012
               </div>
             </div>
           </div>

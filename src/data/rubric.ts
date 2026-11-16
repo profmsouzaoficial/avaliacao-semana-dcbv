@@ -102,19 +102,19 @@ export const CRITERIOS: Criterio[] = [
   {
     id: 4,
     numero: '4',
-    titulo: 'Diálogo entre ciências básicas e formação em saúde',
-    pergunta: 'O trabalho mostra como o conhecimento básico ajuda a entender a saúde e a futura profissão?',
+    titulo: 'Diálogo entre ciências básicas e ciências da saúde',
+    pergunta: 'O trabalho mostra como o conhecimento básico ajuda a entender a saúde e a prática profissional?',
     porQue:
       'Este é o coração da I Semana do DCBV. Não basta citar “anatomia” ou “fisiologia”: queremos ver a ponte entre o conceito básico, o problema de saúde e a formação profissional.',
     observar: [
       'Conceitos das ciências básicas identificados e explicados, não apenas nomeados',
-      'Ligação explícita com a prática, a formação ou o cuidado em saúde',
+      'Ligação explícita com as ciências da saúde, a prática ou o cuidado em saúde',
       'Linguagem acessível a estudantes dos períodos iniciais',
       'Integração entre áreas, quando o trabalho permite',
       'O trabalho ajudaria um calouro a entender por que estudar aquilo importa',
     ],
     niveis: niveis([
-      'Não há conexão com ciências básicas ou com a formação em saúde.',
+      'Não há conexão com ciências básicas ou com as ciências da saúde.',
       'Conexão apenas no título ou em uma frase solta; conceitos não explicados.',
       'Conexão presente, mas superficial ou genérica; poderia ser dita por qualquer trabalho.',
       'Conexão clara e pertinente; conceitos básicos explicados e ligados à prática.',

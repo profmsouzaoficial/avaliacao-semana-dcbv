@@ -195,9 +195,9 @@ export function WorksPanel({
           <span className="mt-0.5 h-2 w-2 shrink-0 rounded-full bg-amber-500" />
           <p>
             <strong>{contar(categoriasAConfirmar, 'trabalho está', 'trabalhos estão')} com categoria a confirmar.</strong>{' '}
-            O parecer e o formulário oficiais não informam a categoria metodológica. Use o filtro
-            “A confirmar” e edite cada trabalho antes da avaliação; a nota não é afetada, mas o
-            contexto pedagógico do barema fica incompleto.
+            O formulário orienta o avaliador a perguntar ao(à) apresentador(a) em qual categoria
+            metodológica o trabalho se encaixa antes de pontuar. A categoria contextualiza o
+            critério 3 e não altera a nota por si só.
           </p>
         </div>
       )}
@@ -207,11 +207,8 @@ export function WorksPanel({
           <span className="mt-0.5 h-2 w-2 shrink-0 rounded-full bg-rose-500" />
           <p>
             <strong>{contar(duplicatas.length, 'título aparece', 'títulos aparecem')} em dois códigos.</strong>{' '}
-            A planilha oficial repete o mesmo trabalho com códigos diferentes:{' '}
-            {duplicatas.map((grupo) => grupo.map((t) => t.codigo).join(' / ')).join(' · ')}. O PDF
-            usa um código na maioria dos pares, usa os dois em 06.02/06.03 e não registra 03.35.
-            Não fundimos os registros: confirme com a comissão qual código é o oficial antes de
-            avaliar e consolidar.
+            A lista corrigida da comissão não deve ter títulos repetidos. Se esta mensagem aparecer,
+            confirme com a comissão qual código é o oficial antes de avaliar e consolidar.
           </p>
         </div>
       )}

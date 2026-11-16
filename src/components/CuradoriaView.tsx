@@ -206,7 +206,7 @@ export function CuradoriaView() {
         <Passo
           numero="3"
           titulo="Distribua as avaliações"
-          texto="Cada trabalho deve ter dois avaliadores. Acompanhe a cobertura no painel."
+          texto="Cada trabalho deve ter um avaliador. Acompanhe a cobertura no painel."
           ativo={aba === 'distribuicao'}
         />
       </div>

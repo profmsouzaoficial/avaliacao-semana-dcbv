@@ -1,7 +1,7 @@
 import { Award, ChevronRight, Clock3, Sparkles } from 'lucide-react';
 import type { RankingItem } from '../types';
 import { SESSOES } from '../data/event';
-import { vencedoresPorSessao } from '../lib/scoring';
+import { MINIMO_AVALIACOES_POR_TRABALHO, vencedoresPorSessao } from '../lib/scoring';
 import { classNames, contar, formatarNota } from '../lib/format';
 import { Badge } from './Badge';
 
@@ -62,7 +62,7 @@ export function SessionsPanel({ ranking, onDetalhar, onAbrirCuradoria }: Session
         {SESSOES.map((sessao) => {
           const daSessao = ranking.filter((i) => i.trabalho.sessao === sessao.numero);
           const vencedor = vencedores[sessao.numero];
-          const cobertos = daSessao.filter((i) => i.concluidas >= 2).length;
+          const cobertos = daSessao.filter((i) => i.concluidas >= MINIMO_AVALIACOES_POR_TRABALHO).length;
           const outros = daSessao
             .filter((i) => i.media !== null && i.trabalho.id !== vencedor?.trabalho.id)
             .slice(0, 3);
@@ -114,9 +114,9 @@ export function SessionsPanel({ ranking, onDetalhar, onAbrirCuradoria }: Session
                       </p>
                     </button>
                     <div className="mt-2 flex flex-wrap items-center gap-1.5">
-                      <Badge tom={vencedor.concluidas >= 2 ? 'green' : 'amber'} className="scale-90">
-                        {vencedor.concluidas >= 2
-                          ? `${vencedor.concluidas} avaliações`
+                      <Badge tom={vencedor.concluidas >= MINIMO_AVALIACOES_POR_TRABALHO ? 'green' : 'amber'} className="scale-90">
+                        {vencedor.concluidas >= MINIMO_AVALIACOES_POR_TRABALHO
+                          ? 'cobertura mínima'
                           : 'cobertura parcial'}
                       </Badge>
                       {vencedor.elegivelDestaqueFormativo && (
@@ -130,11 +130,7 @@ export function SessionsPanel({ ranking, onDetalhar, onAbrirCuradoria }: Session
                         </Badge>
                       )}
                     </div>
-                    {vencedor.concluidas < 2 && (
-                      <p className="mt-2 text-[9.5px] leading-snug text-accent-700/80">
-                        A prévia usa 1 avaliação. A cobertura mínima é de 2.
-                      </p>
-                    )}
+
                   </div>
                 ) : (
                   <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-line bg-paper-light px-3 py-6 text-center">
@@ -194,7 +190,7 @@ export function SessionsPanel({ ranking, onDetalhar, onAbrirCuradoria }: Session
               <p className="mt-1 max-w-2xl text-[11.5px] leading-relaxed text-ink-muted">
                 Reconhecimento simbólico para estudantes de graduação nos períodos iniciais (1º a 4º)
                 que alcançaram média de pelo menos 15/20 no critério 4 — o diálogo entre ciências
-                básicas e formação em saúde. Não é uma categoria oficial do Regulamento; é uma
+                básicas e ciências da saúde. Não é uma categoria oficial do Regulamento; é uma
                 sugestão para a comissão valorizar quem está começando a fazer ciência.
               </p>
             </div>

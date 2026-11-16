@@ -38,13 +38,11 @@ export function CoveragePanel({ ranking, onDetalhar, onAbrirCuradoria }: Coverag
   const porSessao = SESSOES.map((sessao) => {
     const itens = ranking.filter((i) => i.trabalho.sessao === sessao.numero);
     const cobertos = itens.filter((i) => i.concluidas >= MINIMO_AVALIACOES_POR_TRABALHO).length;
-    const comUma = itens.filter((i) => i.concluidas === 1).length;
     return {
       sessao,
       total: itens.length,
       cobertos,
-      comUma,
-      restantes: Math.max(0, itens.length - cobertos - comUma),
+      restantes: Math.max(0, itens.length - cobertos),
     };
   });
 
@@ -67,8 +65,8 @@ export function CoveragePanel({ ranking, onDetalhar, onAbrirCuradoria }: Coverag
               {cob.comMinimo} de {cob.total} trabalhos com cobertura mínima
             </h2>
             <p className="mt-1.5 max-w-2xl text-[12px] leading-relaxed text-ink-muted">
-              A comissão definiu {MINIMO_AVALIACOES_POR_TRABALHO} avaliações concluídas por trabalho
-              (ou todas as atribuições, quando há menos). Rascunhos não contam.
+              A comissão definiu {MINIMO_AVALIACOES_POR_TRABALHO === 1 ? 'uma avaliação concluída' : `${MINIMO_AVALIACOES_POR_TRABALHO} avaliações concluídas`} por trabalho.
+              Rascunhos não contam.
             </p>
             <div className="mt-3 flex flex-wrap gap-2">
               <Badge tom={cob.semAvaliacao > 0 ? 'rose' : 'green'} ponto>
@@ -167,15 +165,12 @@ export function CoveragePanel({ ranking, onDetalhar, onAbrirCuradoria }: Coverag
                 <span className="h-2 w-2 rounded-full bg-emerald-500" /> coberto
               </span>
               <span className="inline-flex items-center gap-1">
-                <span className="h-2 w-2 rounded-full bg-accent-400" /> 1 avaliação
-              </span>
-              <span className="inline-flex items-center gap-1">
-                <span className="h-2 w-2 rounded-full bg-paper-deep" /> sem
+                <span className="h-2 w-2 rounded-full bg-paper-deep" /> sem avaliação
               </span>
             </div>
           </div>
           <div className="space-y-3 px-5 py-4">
-            {porSessao.map(({ sessao, total, cobertos, comUma, restantes }) => (
+            {porSessao.map(({ sessao, total, cobertos, restantes }) => (
               <div key={sessao.numero}>
                 <div className="flex items-center justify-between gap-2">
                   <span className="flex min-w-0 items-center gap-1.5 text-[11px] font-medium text-ink-soft">
@@ -195,10 +190,6 @@ export function CoveragePanel({ ranking, onDetalhar, onAbrirCuradoria }: Coverag
                   <div
                     className="h-full bg-emerald-500"
                     style={{ width: total ? `${(cobertos / total) * 100}%` : '0%' }}
-                  />
-                  <div
-                    className="h-full bg-accent-400"
-                    style={{ width: total ? `${(comUma / total) * 100}%` : '0%' }}
                   />
                   <div
                     className="h-full bg-paper-deep"
@@ -227,7 +218,7 @@ export function CoveragePanel({ ranking, onDetalhar, onAbrirCuradoria }: Coverag
             <CheckCircle2 className="h-8 w-8 text-emerald-500" />
             <p className="mt-2 font-serif text-[17px] font-semibold text-ink">Cobertura completa</p>
             <p className="mt-1 text-[11.5px] text-ink-muted">
-              Todos os trabalhos têm o mínimo de {MINIMO_AVALIACOES_POR_TRABALHO} avaliações concluídas.
+              Todos os trabalhos têm o mínimo de {MINIMO_AVALIACOES_POR_TRABALHO} avaliação concluída.
             </p>
           </div>
         ) : (

@@ -92,10 +92,10 @@ export function AtaOficial({ dados }: { dados: DadosAta }) {
           ))}
         </ol>
         <p className="mt-1.5 text-[8.1pt] leading-[1.45] text-[#263330]">
-          Foram computadas apenas avaliações concluídas. Cada trabalho deveria receber,
-          preferencialmente, duas avaliações independentes; hipóteses de divergência são apreciadas
-          pela comissão (Regulamento, itens 5.1 a 5.5). A plataforma <em>Bancas DCBV</em> apoiou o
-          registro e a consolidação; o barema oficial e a deliberação da comissão prevalecem.
+          Foram computadas apenas avaliações concluídas. Nesta edição, a Comissão Científica
+          definiu uma avaliação por trabalho; eventuais impedimentos ou conflitos de interesse são
+          apreciados pela comissão. A plataforma <em>Bancas DCBV</em> apoiou o registro e a
+          consolidação; o barema oficial e a deliberação da comissão prevalecem.
         </p>
       </section>
 
@@ -114,8 +114,8 @@ export function AtaOficial({ dados }: { dados: DadosAta }) {
           {cobertura.semAvaliacao > 0
             ? `${contar(cobertura.semAvaliacao, 'trabalho ainda sem avaliação concluída', 'trabalhos ainda sem avaliação concluída')}. `
             : cobertura.comMinimo < cobertura.total
-              ? `Todos os trabalhos cadastrados possuem ao menos uma avaliação concluída; ${contar(cobertura.total - cobertura.comMinimo, 'trabalho ainda não atingiu', 'trabalhos ainda não atingiram')} a cobertura mínima de duas avaliações. `
-              : 'Todos os trabalhos cadastrados possuem cobertura mínima de duas avaliações concluídas. '}
+              ? `Todos os trabalhos cadastrados possuem ao menos uma avaliação concluída; ${contar(cobertura.total - cobertura.comMinimo, 'trabalho ainda não atingiu', 'trabalhos ainda não atingiram')} a cobertura mínima de uma avaliação. `
+              : 'Todos os trabalhos cadastrados possuem cobertura mínima de uma avaliação concluída. '}
           {avaliadores.length > 0
             ? `Participaram da avaliação ${contar(avaliadores.length, 'membro', 'membros')}: ${avaliadores
                 .map((r) => r.membro.nome)
@@ -203,7 +203,7 @@ export function AtaOficial({ dados }: { dados: DadosAta }) {
           Como reconhecimento pedagógico, e não como categoria oficial do Regulamento, registra-se a
           sugestão de destaque formativo para estudantes de graduação nos períodos iniciais (1º a 4º)
           que alcançaram média igual ou superior a 15/20 no critério 4 — diálogo entre ciências
-          básicas e formação em saúde.
+          básicas e ciências da saúde.
           {elegiveis.length > 0 ? (
             <>
               {' '}

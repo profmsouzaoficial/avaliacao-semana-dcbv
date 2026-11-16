@@ -227,7 +227,7 @@ export function WorkSidebar({ itens, selecionadoId, onSelecionar }: WorkSidebarP
         <div className="border-t border-line-soft bg-paper-light px-4 py-2.5">
           <div className="flex items-center justify-between text-[10px] text-ink-muted">
             <span className="inline-flex items-center gap-1">
-              <Badge tom="brand" className="scale-90">2 avaliadores</Badge>
+              <Badge tom="brand" className="scale-90">1 avaliador</Badge>
               por trabalho
             </span>
             <span>{percentual === 100 ? 'Tudo concluído' : 'Progresso salvo'}</span>

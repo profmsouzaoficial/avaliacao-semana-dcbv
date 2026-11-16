@@ -10,7 +10,7 @@ import type {
 } from '../types';
 import { periodoInicial } from './format';
 
-export const MINIMO_AVALIACOES_POR_TRABALHO = 2;
+export const MINIMO_AVALIACOES_POR_TRABALHO = 1;
 const ORDEM_DESEMPATE = [4, 5, 1, 2, 3];
 
 export function statusDoTrabalho(

@@ -138,7 +138,7 @@ export function Dashboard({ onAbrirCuradoria, onAbrirAvaliar }: DashboardProps) 
         <StatCard
           rotulo="Cobertura"
           valor={`${Math.round(cob.percentual)}%`}
-          detalhe={`${cob.comMinimo} de ${cob.total} com o mínimo de 2 avaliações`}
+          detalhe={`${cob.comMinimo} de ${cob.total} com o mínimo de 1 avaliação`}
           icone={<Target className="h-4 w-4" />}
           tom="amber"
         />

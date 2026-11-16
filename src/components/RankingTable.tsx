@@ -302,7 +302,7 @@ export function RankingTable({ ranking, onDetalhar }: RankingTableProps) {
           Critérios: {CRITERIOS.map((c) => `${c.id} = ${truncar(c.titulo, 22)}`).join(' · ')}
         </span>
         <span className="font-medium">
-          Rascunhos não entram na média · mínimo de 2 avaliações para cobertura
+          Rascunhos não entram na média · mínimo de 1 avaliação para cobertura
         </span>
       </div>
     </div>

@@ -248,6 +248,15 @@ export function EvaluationForm({ trabalho, onProximo, temProximo }: EvaluationFo
           {trabalho.titulo}
         </h1>
 
+        <div className="mt-3 flex items-start gap-2.5 rounded-2xl border border-accent-200 bg-accent-50 px-4 py-3 text-[11.5px] leading-relaxed text-accent-800">
+          <Info className="mt-0.5 h-4 w-4 shrink-0 text-accent-600" />
+          <p>
+            <strong>Antes de começar:</strong> pergunte ao(à) apresentador(a) em qual categoria
+            metodológica o trabalho se encaixa. A categoria orienta o critério 3, mas não altera a
+            nota por si só.
+          </p>
+        </div>
+
         <div className="mt-4 grid gap-3 rounded-2xl border border-line-soft bg-white/70 p-4 sm:grid-cols-2 xl:grid-cols-4">
           <FichaItem
             icone={<UserRound className="h-3.5 w-3.5" />}
@@ -285,7 +294,7 @@ export function EvaluationForm({ trabalho, onProximo, temProximo }: EvaluationFo
           ) : (
             <span className="inline-flex items-center gap-1.5 text-[11px] text-ink-muted">
               <Info className="h-3.5 w-3.5" />
-              Resumo não informado no parecer. Avalie o banner e a apresentação.
+              Resumo não enviado à banca. Avalie o pôster e a apresentação.
             </span>
           )}
           {trabalho.linkPdf && (

@@ -2,6 +2,7 @@ import { Award, CheckCircle2, CircleDashed, Clock3, Info, MessageSquareText } fr
 import type { Avaliacao, RankingItem } from '../types';
 import { CRITERIOS, nivelPorValor } from '../data/rubric';
 import { categoriaDeTrabalho, sessaoPorNumero } from '../data/event';
+import { MINIMO_AVALIACOES_POR_TRABALHO } from '../lib/scoring';
 import { useApp } from '../context/AppContext';
 import { classNames, formatarDataHora, formatarNota } from '../lib/format';
 import { Badge } from './Badge';
@@ -111,8 +112,8 @@ export function EvaluationDetailModal({ item, onFechar }: EvaluationDetailModalP
             <MessageSquareText className="h-4 w-4 text-brand-600" />
             <h3 className="font-serif text-[16px] font-semibold text-ink">Avaliações recebidas</h3>
           </div>
-          <Badge tom={item.concluidas >= 2 ? 'green' : 'amber'}>
-            {item.concluidas >= 2 ? 'Cobertura mínima' : 'Cobertura parcial'}
+          <Badge tom={item.concluidas >= MINIMO_AVALIACOES_POR_TRABALHO ? 'green' : 'amber'}>
+            {item.concluidas >= MINIMO_AVALIACOES_POR_TRABALHO ? 'Cobertura mínima' : 'Cobertura parcial'}
           </Badge>
         </div>
 
