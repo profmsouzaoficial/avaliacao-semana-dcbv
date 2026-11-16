@@ -62,7 +62,7 @@ A proposta deste app:
 | 1 | Clareza e organização do pôster | Dá para entender o trabalho só de olhar o pôster? |
 | 2 | Pergunta, objetivo e justificativa | O trabalho diz o que quer saber e por que isso importa? |
 | 3 | Caminho metodológico adequado à categoria | O método combina com a pergunta e com a categoria escolhida? |
-| 4 | Diálogo entre ciências básicas e formação em saúde | O trabalho conecta o conhecimento básico com a formação ou o cuidado? |
+| 4 | Diálogo entre ciências básicas e ciências da saúde | O trabalho conecta o conhecimento básico com as ciências da saúde, a prática ou o cuidado? |
 | 5 | Apresentação oral e domínio do trabalho | Quem apresenta entende o que fez e consegue explicar sem ler? |
 
 Cada critério tem uma justificativa pedagógica (“por que isso importa”) e uma lista de “o que observar”. A íntegra está em [`src/data/rubric.ts`](src/data/rubric.ts) e também dentro do app, na aba **Regulamento**.
@@ -252,18 +252,11 @@ O esquema está em [`supabase/migrations/0001_init.sql`](supabase/migrations/000
 
 Passo a passo, incluindo o bootstrap da primeira presidência, em [`supabase/README.md`](supabase/README.md).
 
-### Carga dos avaliadores do PDF
+### Carga inicial histórica (não reaplicar)
 
-O arquivo [`supabase/seed_avaliadores.sql`](supabase/seed_avaliadores.sql) cadastra os 18 avaliadores únicos e importa as 95 atribuições do PDF. Ele é **idempotente** (pode rodar de novo) e termina com um relatório de cobertura. O caso `07.04`/`07.03` é resolvido pelo código e pelo título “dengue”; depois da carga oficial, prefira o `07.04` e remova a atribuição legada do `07.03` (o script `dados:importar` faz isso quando não há avaliação registrada).
+Os arquivos [`supabase/seed_avaliadores.sql`](supabase/seed_avaliadores.sql), [`supabase/dados/trabalhos_oficiais.json`](supabase/dados/trabalhos_oficiais.json) e o script `npm run dados:importar` registram a **carga inicial** de 102 trabalhos e 95 atribuições. A base de produção de 16/11/2026 foi corrigida para **94 trabalhos e 94 atribuições**, com uma avaliação por trabalho.
 
-Ordem recomendada em uma base nova:
-
-1. rode `supabase/migrations/0001_init.sql`;
-2. rode `supabase/seed_avaliadores.sql` para criar os perfis (as atribuições que ainda não têm trabalho ficam pendentes);
-3. rode `npm run dados:importar -- --aplicar` para inserir os 102 trabalhos e completar as 95 atribuições;
-4. rode `seed_avaliadores.sql` de novo apenas se quiser o relatório de cobertura no SQL Editor.
-
-> **Confira os e-mails antes de rodar.** O PDF não traz e-mails; eles foram inferidos dos nomes. Se algum estiver errado, corrija no SQL **antes** de executar. O vínculo é por e-mail, não por nome.
+**Não reaplique esses arquivos sobre a base atual:** eles podem reintroduzir os oito registros removidos. Para uma instalação nova, use-os apenas como referência histórica e adapte a lista à versão corrigida da comissão.
 
 O SQL não cria usuários do Auth. Sem conta no Auth, o perfil existe, mas a pessoa não consegue entrar. Há dois caminhos:
 
@@ -331,13 +324,13 @@ supabase/
   migrations/
     0001_init.sql       esquema, RLS e 20 trabalhos de demonstração
   seed_presidente.sql   bootstrap do primeiro master
-  seed_avaliadores.sql  18 avaliadores + 95 atribuições do PDF + relatório
+  seed_avaliadores.sql  carga histórica: 18 avaliadores + 95 atribuições
   dados/
-    trabalhos_oficiais.json  102 trabalhos aprovados (código, título, autoria, sessão)
+    trabalhos_oficiais.json  carga histórica: 102 trabalhos aprovados
   README.md             implantação, Auth, RLS e problemas comuns
 scripts/
   criar_usuarios_avaliadores.mjs  cria/redefine contas do Auth (dry-run por padrão)
-  importar_dados_oficiais.mjs     importa os 102 trabalhos e as 95 atribuições
+  importar_dados_oficiais.mjs     carga histórica: 102 trabalhos e 95 atribuições
 src/
   data/
     event.ts            evento, sessões, categorias, links oficiais
@@ -387,7 +380,7 @@ O app usa **React 19 + TypeScript + Vite 8 + Tailwind CSS v4 + lucide-react + Su
 - A demo usa `localStorage`: não sincroniza entre navegadores e pode ser apagada pelo usuário.
 - O modo Supabase exige aplicar a migração manualmente; sem `VITE_SUPABASE_URL` e `VITE_SUPABASE_ANON_KEY`, o app permanece em demonstração.
 - O ranking não corrige notas divergentes automaticamente: a comissão vê os dados e delibera (Regulamento, itens 5.4 e 5.5).
-- A planilha tem 102 registros, mas **95 títulos únicos**; seis códigos duplicados e o `03.35` aparecem sem atribuição. A comissão deve decidir o código oficial antes de consolidar.
+- A base de produção tem **94 trabalhos e 94 atribuições**, uma por trabalho; os oito registros removidos da lista original não aparecem mais. O código `03.44` do e-mail não existe na lista; o correspondente é `03.34`.
 - Os e-mails dos avaliadores no seed foram inferidos dos nomes do PDF; confira-os na lista oficial.
 - O app não tem upload de arquivos, notificações por e-mail nem integração com o sistema acadêmico.
 

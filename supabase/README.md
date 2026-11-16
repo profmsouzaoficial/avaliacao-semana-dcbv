@@ -273,7 +273,7 @@ base; ele não duplica atribuições.
 | `new row violates row-level security policy` | ação sem papel de presidência | entre com uma conta `papel = 'presidente'` e `ativo = true` |
 | `A comissão precisa de ao menos uma presidência ativa` | tentativa de remover a última presidência | cadastre outra presidência antes |
 | `relation "public.avaliadores" does not exist` | migração não rodou neste projeto/banco | confira a URL do projeto e rode `0001_init.sql` antes do seed |
-| Seed diz “95 atribuições” mas o app mostra menos | faltam trabalhos com aqueles códigos | rode `npm run dados:importar -- --aplicar`; veja os códigos ausentes no relatório |
+| Seed diz “95 atribuições” mas o app mostra menos | você aplicou a carga histórica sobre a base já corrigida | não reaplique o seed; confira a aba **Distribuição** e o estado atual (94/94) |
 
 ## 8. Deploy
 
