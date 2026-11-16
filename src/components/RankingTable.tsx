@@ -3,6 +3,7 @@ import { Award, ChevronRight, Filter, Search, X } from 'lucide-react';
 import type { RankingItem } from '../types';
 import { CRITERIOS, rotuloNota } from '../data/rubric';
 import { SESSOES, sessaoPorNumero } from '../data/event';
+import { MINIMO_AVALIACOES_POR_TRABALHO } from '../lib/scoring';
 import { classNames, contar, formatarNota, truncar } from '../lib/format';
 import { Badge } from './Badge';
 
@@ -163,7 +164,7 @@ export function RankingTable({ ranking, onDetalhar }: RankingTableProps) {
                     <span
                       className={classNames(
                         'text-[11px] font-semibold',
-                        item.concluidas >= 2
+                        item.concluidas >= MINIMO_AVALIACOES_POR_TRABALHO
                           ? 'text-emerald-600'
                           : item.concluidas > 0
                             ? 'text-accent-600'

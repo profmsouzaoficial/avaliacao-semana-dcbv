@@ -2,6 +2,12 @@
 -- I Semana do DCBV — avaliadores e atribuições iniciais
 -- Arquivo: supabase/seed_avaliadores.sql
 --
+-- ATENÇÃO — CARGA HISTÓRICA (NÃO REAPLICAR NA BASE DE PRODUÇÃO)
+-- A base de 16/11/2026 foi corrigida para 94 trabalhos e 94 atribuições,
+-- com uma avaliação por trabalho, conforme decisão da Comissão Científica.
+-- Este arquivo mantém a carga inicial de 95 atribuições e os códigos que
+-- foram removidos. Use a aba Distribuição do app para ajustes na base atual.
+--
 -- O que este arquivo faz:
 --   1. cadastra 18 avaliadores na tabela public.avaliadores (o e-mail é a chave);
 --   2. importa 95 atribuições trabalho → avaliador, extraídas do PDF

@@ -4,6 +4,12 @@ Este diretório contém o esquema do banco, as políticas de acesso e o roteiro 
 implantação. O app funciona sem Supabase em **modo demonstração**; o Supabase é
 necessário para uso real com login e dados compartilhados entre a banca.
 
+> **Atualização de 16/11/2026:** a base de produção foi ajustada para **94
+> trabalhos e 94 atribuições**, com **uma avaliação por trabalho**, conforme
+> decisão da Comissão Científica. O roteiro abaixo descreve a implantação
+> inicial; os seeds históricos de 102/95 **não devem ser reaplicados** sobre a
+> base já corrigida. Para ajustes, use a aba **Distribuição** do app.
+
 ## 1. Criar o projeto
 
 1. Crie um projeto em <https://supabase.com/dashboard>.
@@ -48,9 +54,9 @@ No **SQL Editor**, cole e execute o conteúdo inteiro de
 A migração também semeia os **20 trabalhos** usados na demonstração, com os
 títulos exatamente como aparecem no parecer oficial. Autoria, apresentador,
 instituição e período ficam em branco de propósito: o parecer não os informa.
-A base completa de **102 trabalhos aprovados** entra pelo script
-`npm run dados:importar -- --aplicar`, que lê a planilha oficial e preenche
-autoria, apresentador e instituição.
+A carga inicial de **102 trabalhos aprovados** entrava pelo script
+`npm run dados:importar -- --aplicar`; após a correção de 16/11/2026, a base de
+produção tem **94 trabalhos**, sem os oito códigos removidos.
 
 ### 2.1 Carga dos avaliadores e das atribuições do PDF
 
@@ -60,7 +66,8 @@ Editor. Ele:
 - cadastra **18 avaliadores**: a lista tinha 19 nomes, mas “David Henrique” e
   “David Henrique Rodrigues” são a mesma pessoa; “Alexandra Paiva” e “Alexandra
   Paiva Araújo” também foram consolidadas;
-- importa **95 atribuições** extraídas do PDF “Trabalhos por avaliador”;
+- importa a carga histórica de **95 atribuições** do PDF original; a base de
+  produção atual tem **94 atribuições**, uma por trabalho, após a correção;
 - **não cria** usuários no Auth, senhas, notas ou avaliações;
 - termina com um relatório de cobertura.
 
@@ -74,20 +81,16 @@ atribuições que ainda não existem. Se você importar os trabalhos que faltava
 depois, rode o seed outra vez; ele completa os vínculos que antes não tinham
 trabalho correspondente.
 
-**Cobertura:** o PDF lista **um avaliador por trabalho**. O Regulamento (item
-5.1) e o app trabalham com **dois**. Portanto, depois do seed, cada trabalho do
-PDF fica com 1 de 2; a segunda atribuição deve ser feita em **Curadoria →
-Distribuição** (botão **Completar distribuição**) ou por **Importar lista**.
+**Cobertura atual:** a lista corrigida tem **94 trabalhos e 94 atribuições**,
+com **um avaliador por trabalho**. A cobertura mínima do app é 1 avaliação
+concluída; não há segundo avaliador a completar.
 
-**Duplicatas:** a planilha tem 102 linhas, mas 7 títulos aparecem em dois
-códigos (`03.13/03.14`, `03.17/05.13`, `03.22/05.16`, `03.33/03.34`,
-`06.02/06.03`, `06.11/06.12`, `07.03/07.04`). O PDF atribuiu um código da
-maioria dos pares, **os dois** no par `06.02/06.03`, e não atribuiu o `03.35`
-(que não tem par). A interface marca esses 14 registros como **duplicata**; não
-funda os registros sozinha. A comissão deve escolher o código oficial e, se for
-o caso, migrar uma das atribuições de `06.02/06.03` para `03.35`.
+**Duplicatas:** a lista corrigida eliminou os códigos que não constavam da
+distribuição: `03.13`, `03.33`, `03.35`, `05.13`, `05.16`, `06.02`, `06.11` e
+`07.03`. A base atual não tem títulos repetidos. O código `03.44` citado no
+e-mail da comissão não existe na lista; o correspondente é `03.34`.
 
-### 2.2 Carga dos 102 trabalhos oficiais
+### 2.2 Carga inicial histórica (102 trabalhos)
 
 Depois de criar os perfis, rode na máquina do administrador:
 
@@ -97,11 +100,10 @@ npm run dados:importar -- --aplicar # grava
 ```
 
 O script lê [`dados/trabalhos_oficiais.json`](dados/trabalhos_oficiais.json),
-insere os 82 trabalhos que faltam, preenche os campos de autoria dos 20 já
-existentes e aplica as 95 atribuições do PDF. Ele **não apaga** trabalhos,
-avaliações ou atribuições; a única remoção é a atribuição legada
-`07.03 → Ione Matos`, feita somente quando o `07.04` existe e não há avaliação
-registrada.
+inseria os trabalhos que faltavam, preenchia a autoria dos 20 já existentes e
+aplicava as 95 atribuições do PDF original. **Não reaplique este script sobre a
+base de 16/11/2026:** ele pode reintroduzir os oito registros removidos. A
+produção atual já está corrigida para 94/94.
 
 > **Categoria:** o parecer e o formulário não informam a categoria metodológica
 > (1–5). Os 82 trabalhos novos entram com categoria 1 e a observação

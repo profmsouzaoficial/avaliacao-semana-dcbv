@@ -6,6 +6,8 @@ O app foi construído a partir do convite do Prof. Dr. Márcio Luís Moreira de 
 
 > **Em uma frase:** a banca registra notas e feedback com critérios claros; a presidência enxerga cobertura, ranking e uma minuta de ata. A comissão delibera; o app organiza a evidência.
 
+> **Atualização de 16/11/2026 — decisão da Comissão Científica:** a edição passou a ter **uma avaliação por trabalho**. A base de produção foi ajustada para **94 trabalhos e 94 atribuições** (um avaliador por trabalho), com **0 avaliações** registradas. Os oito códigos que não constam da lista corrigida foram removidos; o guia do avaliador foi atualizado para a versão 2. Detalhes na seção [Base de produção](#base-de-produção-estado-em-16112026).
+
 ---
 
 ## Capturas
@@ -74,7 +76,7 @@ nota = (nível do critério 1 + ... + nível do critério 5) × 5
 - Níveis: `0 = Não avaliável`, `1 = Iniciante`, `2 = Em desenvolvimento`, `3 = Adequado`, `4 = Destaque`.
 - Faixas: `0` Sem nota; `1–59` Iniciante; `60–74` Em desenvolvimento; `75–89` Adequado; `90–100` Destaque.
 - Empates no ranking: média geral, depois médias dos critérios **4, 5, 1, 2, 3**, nesta ordem; persistindo, ordem do código.
-- A cobertura mínima é de **2 avaliações concluídas por trabalho**. Uma única avaliação aparece no ranking como prévia, mas não conta como cobertura completa.
+- A cobertura mínima é de **1 avaliação concluída por trabalho**. Rascunhos não contam; a avaliação concluída já permite a consolidação.
 
 A faixa exata e os rótulos ficam em [`src/data/rubric.ts`](src/data/rubric.ts) e [`src/lib/scoring.ts`](src/lib/scoring.ts).
 
@@ -182,11 +184,11 @@ A aba **Curadoria** (só presidência/master) tem três passos:
 
 1. **Traga os trabalhos** — importe o CSV do parecer ou cadastre manualmente. O código `NN.NN` é a chave; importar de novo atualiza os existentes.
 2. **Cadastre a banca** — nome, e-mail, titulação, instituição, papel e status. No Supabase, cada pessoa precisa de um usuário no Auth com o mesmo e-mail; o vínculo é automático no primeiro login.
-3. **Distribua as avaliações** — clique nas células da matriz. Cada trabalho deve ter dois avaliadores. O botão **Completar distribuição** sugere avaliadores que ainda não estão naquele trabalho.
+3. **Distribua as avaliações** — clique nas células da matriz. Cada trabalho deve ter um avaliador nesta edição. O botão **Completar distribuição** sugere avaliadores que ainda não estão naquele trabalho.
 
 ### Importar atribuições em massa
 
-Na aba **Distribuição**, o botão **Importar lista** aceita uma lista `e-mail;código` (ou `código;e-mail`), uma por linha. É útil para carregar as 95 atribuições do PDF de uma vez ou para acrescentar o segundo avaliador sem clicar célula por célula.
+Na aba **Distribuição**, o botão **Importar lista** aceita uma lista `e-mail;código` (ou `código;e-mail`), uma por linha. É útil para carregar a lista de 94 atribuições da versão corrigida de uma vez, sem clicar célula por célula.
 
 - A prévia mostra **novas**, **já existentes** e **problemas** antes de gravar.
 - E-mails precisam estar cadastrados em **Membros**; códigos precisam existir em **Trabalhos**. A importação **não cria** membros nem trabalhos silenciosamente.
@@ -194,46 +196,23 @@ Na aba **Distribuição**, o botão **Importar lista** aceita uma lista `e-mail;
 - O botão **Cadastrar avaliador** abre o mesmo formulário de membro. Ele cria o perfil, **não a senha**: o usuário do Auth é criado no Supabase, com o mesmo e-mail.
 - O aviso “trabalho com 2+” não impede a importação; serve para você perceber se está duplicando uma atribuição existente.
 
-> **Cobertura do PDF:** o arquivo recebido tem 18 avaliadores únicos e 95 atribuições. Na maioria dos trabalhos há **um avaliador**; o par duplicado `06.02`/`06.03` recebeu dois. O Regulamento e o app pedem dois por trabalho. Use **Completar distribuição** ou importe uma segunda lista; o relatório do SQL mostra quantos trabalhos ainda têm só um.
+> **Cobertura da lista corrigida:** 18 avaliadores e 94 atribuições, uma por trabalho. A base de produção já está com essa distribuição; não há segundo avaliador a completar.
 
-### Carregar a base oficial de 102 trabalhos
+### Base de produção (estado em 16/11/2026)
 
-O banco de produção começa apenas com os 20 trabalhos da demonstração. Para carregar a lista completa do parecer e as atribuições do PDF:
+A base de produção foi ajustada manualmente à lista **“Trabalhos por avaliador - Bases da Saúde_corrigido.pdf”**:
 
-```bash
-npm run dados:importar              # confere o plano, sem gravar
-npm run dados:importar -- --aplicar # grava trabalhos e atribuições
-```
+- **94 trabalhos** e **94 atribuições**: exatamente um avaliador por trabalho;
+- **18 avaliadores** com atribuições; a presidência e os demais membros continuam cadastrados;
+- **0 avaliações** concluídas ou em rascunho no momento da correção;
+- foram removidos os oito códigos que não constam da lista corrigida: `03.13`, `03.33`, `03.35`, `05.13`, `05.16`, `06.02`, `06.11` e `07.03`;
+- o código **`03.44`** citado no e-mail da comissão não existe na lista; o trabalho correspondente é **`03.34`** (Esquistossomose em Capitão Andrade), que está atribuído à Ana Carolina.
 
-O script é **idempotente** e não apaga trabalhos nem avaliações:
+> **Atenção:** `npm run dados:importar` e `supabase/seed_avaliadores.sql` descrevem a **carga inicial histórica** de 102 trabalhos e 95 atribuições. Não os reaplique sobre a base atual: eles podem reintroduzir os registros removidos. Para conferir ou ajustar a distribuição, use a aba **Distribuição** do app.
 
-- lê `supabase/dados/trabalhos_oficiais.json`, gerado a partir da planilha oficial do parecer (102 aprovados; o `02.02` reprovado fica fora);
-- preenche **apresentador, autoria, instituição e sessão** dos trabalhos que já existem;
-- insere os **82 trabalhos que faltavam**, mantendo os 20 da demo;
-- aplica as **95 atribuições** do PDF e remove apenas a atribuição legada `07.03 → Ione Matos` quando o `07.04` já existe e não há avaliação registrada;
-- não altera categorias existentes nem notas.
+### Categoria metodológica
 
-> **Categoria metodológica:** nem o parecer nem o formulário oficial informam a categoria 1–5. Os trabalhos novos entram com **categoria 1** e a observação “Categoria metodológica a confirmar”. A interface mostra **A confirmar** e a Curadoria tem um filtro próprio para revisar esses 82 registros antes da avaliação. A nota não depende da categoria; ela contextualiza o barema.
-
-### Duplicatas da planilha oficial
-
-A planilha do parecer tem **102 linhas, mas 7 títulos aparecem em dois códigos** — o mesmo trabalho, com diferenças de caixa, pontuação, instituição ou ordem de autoria. Não fundimos esses registros automaticamente: a comissão precisa dizer qual código é o oficial.
-
-| Título repetido | Códigos | O que o PDF fez |
-|---|---|---|
-| HIV em mulheres ≥ 40 anos | `03.13` / `03.14` | atribuiu só `03.14` |
-| Micobactéria em células-tronco (microscopia) | `03.17` / `05.13` | atribuiu só `03.17` |
-| Micobactéria em células-tronco (modulação) | `03.22` / `05.16` | atribuiu só `03.22` |
-| Esquistossomose em Capitão Andrade | `03.33` / `03.34` | atribuiu só `03.34` |
-| Fisioterapia domiciliar (Kawan) | `06.02` / `06.03` | atribuiu **os dois** |
-| Fisioterapia domiciliar (Ludimila) | `06.11` / `06.12` | atribuiu só `06.12` |
-| Dengue em Governador Valadares | `07.03` / `07.04` | atribuiu só `07.04` |
-
-O `03.35` (tuberculose e privação de liberdade) é um trabalho **sem par e sem atribuição** no PDF. Por isso a matriz mostra 7 sem atribuição: seis são os códigos duplicados e um é o `03.35`. A tela de Curadoria sinaliza os 14 registros com o selo **duplicata**; a decisão de manter, renomear ou excluir é da comissão.
-
-> O PDF também dá **duas avaliadoras ao par `06.02`/`06.03`**, que é o mesmo título. Isso não deve ser tratado como “dois avaliadores do mesmo trabalho” sem uma decisão: ou os dois códigos são apresentações distintas, ou uma atribuição precisa migrar para o `03.35`.
-
-**Cobertura:** a base tem 95 trabalhos únicos e o PDF tem 95 atribuições, mas a distribuição não é uma por trabalho (ver acima). Depois de resolver as duplicatas, confira a matriz e complete o segundo avaliador de cada trabalho, como pede o Regulamento.
+O parecer e o formulário oficiais não informam a categoria 1–5. Os trabalhos entraram com **categoria 1** e a observação “Categoria metodológica a confirmar”; a interface mostra **A confirmar**. O formulário de avaliação orienta o avaliador a perguntar ao(à) apresentador(a) em qual categoria o trabalho se encaixa; a categoria contextualiza o critério 3 e não altera a nota por si só.
 
 ### CSV
 
