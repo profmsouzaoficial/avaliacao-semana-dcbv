@@ -319,7 +319,7 @@ export function RegulamentoView() {
               <strong className="text-ink-soft">Privacidade:</strong> o avaliador vê apenas os
               trabalhos atribuídos a si; a presidência vê todos os dados. O nome dos membros aparece
               na tela de entrada para facilitar o acesso, mas senhas nunca são comparadas no
-              navegador — a autenticação é do Supabase.
+              navegador — a autenticação é feita pelo sistema oficial.
             </div>
           </section>
 

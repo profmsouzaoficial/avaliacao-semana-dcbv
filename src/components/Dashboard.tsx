@@ -17,7 +17,7 @@ import { EVENTO } from '../data/event';
 import { useApp } from '../context/AppContext';
 import { cobertura, montarRanking } from '../lib/scoring';
 import { baixarArquivo, rankingParaCsv } from '../lib/csv';
-import { classNames, contar, formatarDataHora, formatarNota } from '../lib/format';
+import { classNames, contar, dataIsoLocal, formatarDataHora, formatarNota } from '../lib/format';
 import { Badge } from './Badge';
 import { Button } from './Button';
 import { StatCard } from './StatCard';
@@ -70,7 +70,7 @@ export function Dashboard({ onAbrirCuradoria, onAbrirAvaliar }: DashboardProps) 
 
   const exportar = () => {
     baixarArquivo(
-      `ranking-dcbv-${new Date().toISOString().slice(0, 10)}.csv`,
+      `ranking-dcbv-${dataIsoLocal()}.csv`,
       rankingParaCsv(ranking),
     );
     notificar('Ranking exportado em CSV. O arquivo abre no Excel com acentuação.', 'sucesso');

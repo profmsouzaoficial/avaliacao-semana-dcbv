@@ -178,7 +178,7 @@ export function CuradoriaView() {
         <div className="flex flex-wrap items-center gap-2">
           <span className="eyebrow">Curadoria</span>
           <Badge tom={modo === 'demo' ? 'amber' : 'green'} ponto>
-            {modo === 'demo' ? 'demonstração · localStorage' : 'Supabase · dados reais'}
+            {modo === 'demo' ? 'demonstração · neste navegador' : 'Base oficial · dados reais'}
           </Badge>
         </div>
         <h1 className="display mt-1.5 text-[29px] font-semibold leading-tight tracking-tight text-ink sm:text-[36px]">
@@ -294,7 +294,7 @@ export function CuradoriaView() {
               </div>
               <p className="mt-1 max-w-2xl text-[10.5px] leading-relaxed text-ink-muted">
                 Apaga as alterações salvas neste navegador e restaura os 20 trabalhos e 3 membros de
-                exemplo. Não afeta o Supabase.
+                exemplo. Não afeta os dados oficiais.
               </p>
             </div>
             <Button

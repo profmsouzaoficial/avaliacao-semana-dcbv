@@ -73,7 +73,7 @@ export function MembersPanel({ onNovo, onEditar, onExcluir }: MembersPanelProps)
         </div>
         <p className="mt-2.5 border-t border-line-soft pt-2.5 text-[10px] leading-relaxed text-ink-muted">
           {modo === 'supabase'
-            ? 'Cada membro precisa de um usuário no Supabase Auth com o mesmo e-mail. O vínculo é feito automaticamente no primeiro login.'
+            ? 'Cada membro precisa de um acesso com o mesmo e-mail. O vínculo é feito automaticamente no primeiro login.'
             : 'Modo demonstração: clique em um membro na tela de entrada para assumir o papel dele. Não há senha.'}
         </p>
       </div>

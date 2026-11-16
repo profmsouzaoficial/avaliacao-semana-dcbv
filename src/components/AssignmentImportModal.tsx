@@ -348,8 +348,8 @@ export function AssignmentImportModal({
         )}
 
         <p className={classNames('text-[10px] leading-relaxed text-ink-muted', !temTexto && 'hidden')}>
-          <strong>Importante:</strong> cadastrar o membro aqui não cria a senha. O acesso é criado em
-          Supabase → Authentication → Users, com o mesmo e-mail. O vínculo é feito no primeiro login.
+          <strong>Importante:</strong> cadastrar o membro aqui não cria a senha. O acesso é criado pela
+          presidência com o mesmo e-mail. O vínculo é feito no primeiro login.
         </p>
       </div>
     </Modal>

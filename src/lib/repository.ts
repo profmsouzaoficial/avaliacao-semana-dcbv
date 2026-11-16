@@ -447,16 +447,19 @@ export class SupabaseRepository implements Repositorio {
 
   async inicializar(): Promise<ResultadoInicializacao> {
     const vazio: Snapshot = { membros: [], trabalhos: [], atribuicoes: [], avaliacoes: [] };
-    const schema = await this.verificarSchema();
-    if (!schema.ok) {
-      return { membro: null, snapshot: vazio, schemaOk: false, aviso: schema.aviso };
-    }
+    // Consultar a sessão antes de tocar nas tabelas evita uma requisição anônima
+    // que o PostgREST recusaria com 401 e deixaria ruído no console do navegador.
     const { data, error } = await this.cliente.auth.getSession();
     if (error) {
       return { membro: null, snapshot: vazio, schemaOk: true, aviso: mensagemDeErro(error) };
     }
     const user = data.session?.user;
     if (!user) return { membro: null, snapshot: vazio, schemaOk: true };
+
+    const schema = await this.verificarSchema();
+    if (!schema.ok) {
+      return { membro: null, snapshot: vazio, schemaOk: false, aviso: schema.aviso };
+    }
 
     // Vincula automaticamente o usuário autenticado ao cadastro da comissão
     // cujo e-mail coincide. A função é security definer e idempotente.

@@ -25,7 +25,7 @@ function dataPadrao(): string {
 }
 
 export function AtaModal({ aberto, onFechar }: AtaModalProps) {
-  const { trabalhos, atribuicoes, avaliacoes, membros } = useApp();
+  const { trabalhos, atribuicoes, avaliacoes, membros, membro } = useApp();
   const [dataConsolidacao, setDataConsolidacao] = useState(dataPadrao);
   const [observacoes, setObservacoes] = useState('');
 
@@ -43,7 +43,10 @@ export function AtaModal({ aberto, onFechar }: AtaModalProps) {
     [membros, atribuicoes, avaliacoes],
   );
 
+  // A ata é assinada por quem está gerando o documento; se quem opera não for
+  // presidência, usa a primeira presidência ativa como referência da comissão.
   const presidente =
+    (membro?.papel === 'presidente' && membro.ativo ? membro : null) ??
     membros.find((m) => m.papel === 'presidente' && m.ativo) ??
     membros.find((m) => m.papel === 'presidente') ??
     null;

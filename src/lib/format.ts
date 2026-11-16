@@ -7,6 +7,14 @@ export function formatarPercentual(valor: number): string {
   return `${Math.round(valor)}%`;
 }
 
+/** Data no fuso local, em ISO (AAAA-MM-DD), para nomes de arquivo e inputs. */
+export function dataIsoLocal(data = new Date()): string {
+  const ano = data.getFullYear();
+  const mes = String(data.getMonth() + 1).padStart(2, '0');
+  const dia = String(data.getDate()).padStart(2, '0');
+  return `${ano}-${mes}-${dia}`;
+}
+
 export function formatarDataHora(iso: string | null | undefined): string {
   if (!iso) return '—';
   const data = new Date(iso);

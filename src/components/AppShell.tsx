@@ -96,10 +96,10 @@ export function AppShell({ aba, onAba, children }: AppShellProps) {
                   ? 'border-accent-400/25 bg-accent-400/10 text-accent-300'
                   : 'border-emerald-400/25 bg-emerald-400/10 text-emerald-300',
               )}
-              title={modo === 'demo' ? 'Dados salvos neste navegador' : 'Dados persistidos no Supabase'}
+              title={modo === 'demo' ? 'Dados salvos neste navegador' : 'Dados salvos no sistema oficial'}
             >
               {modo === 'demo' ? <Sparkles className="h-3 w-3" /> : <Database className="h-3 w-3" />}
-              {modo === 'demo' ? 'Demonstração' : 'Supabase'}
+              {modo === 'demo' ? 'Demonstração' : 'Oficial'}
             </span>
             <MenuUsuario
               iniciais={iniciais(membro.nome)}
@@ -269,7 +269,7 @@ function MenuUsuario({
             <p className="truncate text-[12.5px] font-semibold text-ink">{nome}</p>
             <p className="mt-0.5 text-[10.5px] text-ink-muted">
               {papel === 'presidente' ? 'Presidência da comissão' : 'Avaliador(a) convidado(a)'} ·{' '}
-              {modo === 'demo' ? 'demonstração' : 'Supabase'}
+              {modo === 'demo' ? 'demonstração' : 'sistema oficial'}
             </p>
           </div>
           <div className="p-1.5">

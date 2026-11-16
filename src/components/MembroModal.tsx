@@ -192,7 +192,7 @@ export function MembroModal({ aberto, membro, onFechar }: MembroModalProps) {
             />
             <span className="mt-1 block text-[9.5px] leading-relaxed text-ink-muted">
               {modo === 'supabase'
-                ? 'Precisa corresponder a um usuário criado no Supabase Auth. O vínculo é feito no primeiro login.'
+                ? 'Precisa corresponder ao e-mail de acesso cadastrado pela presidência. O vínculo é feito no primeiro login.'
                 : 'Na demonstração, o e-mail é apenas um rótulo; não há senha.'}
             </span>
           </label>

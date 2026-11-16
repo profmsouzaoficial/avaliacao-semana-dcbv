@@ -142,8 +142,8 @@ export function LoginScreen() {
               </h2>
               <p className="mt-2 text-[13px] leading-relaxed text-ink-muted">
                 {modo === 'demo' || mostrarDemo
-                  ? 'Explore o fluxo completo com os títulos reais dos trabalhos aprovados. Nada é enviado para o Supabase.'
-                  : 'Use o e-mail cadastrado pela presidência da comissão. A senha é gerenciada pelo Supabase Auth.'}
+                  ? 'Explore o fluxo completo com os títulos reais dos trabalhos aprovados. Nada é enviado para o servidor.'
+                  : 'Use o e-mail cadastrado pela presidência da comissão. No primeiro acesso, use a senha informada pela presidência.'}
               </p>
             </div>
 
@@ -296,7 +296,7 @@ export function LoginScreen() {
           <div className="mt-5 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-[11px] text-ink-muted">
             <span className="inline-flex items-center gap-1.5">
               <ShieldCheck className="h-3.5 w-3.5 text-brand-500" />
-              Dados protegidos por RLS
+              Acesso restrito à comissão
             </span>
             <span className="inline-flex items-center gap-1.5">
               <UserRound className="h-3.5 w-3.5 text-brand-500" />
