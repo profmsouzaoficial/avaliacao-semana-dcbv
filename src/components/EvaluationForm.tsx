@@ -100,8 +100,6 @@ export function EvaluationForm({ trabalho, onProximo, temProximo }: EvaluationFo
   const respondidos = totalRespondidos(notas);
   const notaFinal = calcularNota(notas);
   const completa = respondidos === CRITERIOS.length;
-  const mencaoValida = !indicacaoMencao || justificativaMencao.trim().length >= 20;
-  const podeConcluir = completa && mencaoValida;
   const temConteudo =
     respondidos > 0 ||
     parecer.trim().length > 0 ||
@@ -172,10 +170,6 @@ export function EvaluationForm({ trabalho, onProximo, temProximo }: EvaluationFo
             });
           }, 80);
         }
-        return;
-      }
-      if (!mencaoValida) {
-        setErro('Para indicar menção honrosa, escreva uma justificativa com pelo menos 20 caracteres.');
         return;
       }
     } else if (!temConteudo) {
@@ -500,24 +494,15 @@ export function EvaluationForm({ trabalho, onProximo, temProximo }: EvaluationFo
                       <label className="block">
                         <span className="mb-1.5 flex items-center justify-between gap-3">
                           <span className="text-[11.5px] font-semibold text-ink-soft">
-                            Por que este trabalho merece a menção?
+                            Por que este trabalho merece a menção? (opcional)
                           </span>
-                          <span
-                            className={classNames(
-                              'text-[10px] font-semibold',
-                              justificativaMencao.trim().length >= 20
-                                ? 'text-emerald-600'
-                                : 'text-ink-muted',
-                            )}
-                          >
-                            {justificativaMencao.trim().length}/20 mín.
-                          </span>
+                          <span className="text-[10px] font-semibold text-ink-muted">{justificativaMencao.trim().length} caracteres</span>
                         </span>
                         <textarea
                           value={justificativaMencao}
                           onChange={(e) => setJustificativaMencao(e.target.value)}
                           rows={3}
-                          placeholder="Ex.: O trabalho conecta a fisiologia da coagulação a um problema real de saúde e a apresentação foi clara e segura."
+                          placeholder="Se quiser, registre as evidências do destaque. Ex.: O trabalho conecta a fisiologia da coagulação a um problema real de saúde e a apresentação foi clara e segura."
                           className="w-full resize-y rounded-xl border border-line bg-paper-light px-3 py-2.5 text-[12.5px] leading-relaxed text-ink outline-none transition placeholder:text-ink-muted/70 focus:border-brand-400 focus:bg-white focus:ring-4 focus:ring-brand-100"
                         />
                       </label>
@@ -584,7 +569,7 @@ export function EvaluationForm({ trabalho, onProximo, temProximo }: EvaluationFo
                 <Button
                   variante="amber"
                   onClick={() => void salvar(true)}
-                  disabled={!podeConcluir || salvandoTipo !== null}
+                  disabled={!completa || salvandoTipo !== null}
                   carregando={salvandoTipo === 'concluir'}
                   icone={<Send className="h-4 w-4" />}
                   className="flex-1 sm:flex-none"
@@ -719,10 +704,6 @@ function ResumoConcluido({
   }, [indicacaoMencao, justificativaMencao]);
 
   const confirmarMencao = async () => {
-    if (indicacaoLocal && justificativaLocal.trim().length < 20) {
-      setErroMencao('Para indicar menção honrosa, escreva uma justificativa com pelo menos 20 caracteres.');
-      return;
-    }
     setSalvandoMencao(true);
     setErroMencao(null);
     try {
@@ -828,7 +809,7 @@ function ResumoConcluido({
                 </p>
                 <p className="mt-0.5 text-[11px] leading-relaxed text-ink-muted">
                   {indicacaoMencao
-                    ? justificativaMencao || 'Sem justificativa registrada.'
+                    ? justificativaMencao || 'Indicação registrada sem justificativa.'
                     : 'A ausência de indicação não impede que a comissão considere o trabalho.'}
                 </p>
                 {!editandoMencao && (
@@ -865,18 +846,9 @@ function ResumoConcluido({
                     <label className="block">
                       <span className="mb-1.5 flex items-center justify-between gap-3">
                         <span className="text-[11px] font-semibold text-ink-soft">
-                          Por que este trabalho merece a menção?
+                          Justificativa (opcional)
                         </span>
-                        <span
-                          className={classNames(
-                            'text-[10px] font-semibold',
-                            justificativaLocal.trim().length >= 20
-                              ? 'text-emerald-600'
-                              : 'text-ink-muted',
-                          )}
-                        >
-                          {justificativaLocal.trim().length}/20 mín.
-                        </span>
+                        <span className="text-[10px] font-semibold text-ink-muted">{justificativaLocal.trim().length} caracteres</span>
                       </span>
                       <textarea
                         value={justificativaLocal}
@@ -885,7 +857,7 @@ function ResumoConcluido({
                           setErroMencao(null);
                         }}
                         rows={3}
-                        placeholder="Ex.: O trabalho conecta a fisiologia da coagulação a um problema real de saúde e a apresentação foi clara e segura."
+                        placeholder="Se quiser, registre as evidências do destaque. Ex.: O trabalho conecta a fisiologia da coagulação a um problema real de saúde e a apresentação foi clara e segura."
                         className="w-full resize-y rounded-xl border border-line bg-white px-3 py-2.5 text-[12.5px] leading-relaxed text-ink outline-none transition placeholder:text-ink-muted/70 focus:border-brand-400 focus:ring-4 focus:ring-brand-100"
                       />
                     </label>

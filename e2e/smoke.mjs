@@ -136,26 +136,35 @@ async function main() {
     await textareas.nth(0).fill('Objetivo claro; o método está descrito de forma compreensível.');
     await textareas.nth(1).fill('Informar o número de participantes e revisar a legenda da Figura 2.');
     await textareas.nth(2).fill('Trabalho adequado à categoria, com resultados bem organizados.');
+    const indicacaoSemJustificativa = page.getByRole('checkbox', {
+      name: /Indicar para menção honrosa/,
+    });
+    await indicacaoSemJustificativa.check();
+    assert.equal(
+      await page.getByRole('button', { name: /Concluir avaliação/ }).isEnabled(),
+      true,
+      'a conclusão deve liberar mesmo com a justificativa vazia',
+    );
+    await indicacaoSemJustificativa.uncheck();
     await page.getByRole('button', { name: /Concluir avaliação/ }).click();
     await page.waitForSelector('text=Avaliação concluída');
     await page.screenshot({ path: join(ARTIFACTS, '03-avaliacao-concluida.png'), fullPage: true });
 
-    // 3b. Menção honrosa pode ser registrada depois da conclusão
+    // 3b. Menção honrosa pode ser registrada depois da conclusão, sem justificativa
     await page.getByRole('button', { name: /Indicar para menção honrosa/ }).click();
     const checkboxMencao = page.getByRole('checkbox', {
       name: /Indicar este trabalho para menção honrosa/,
     });
     assert.equal(await checkboxMencao.isChecked(), false, 'a menção deve começar desmarcada');
     await checkboxMencao.check();
-    const justificativaMencao = page.getByPlaceholder(/O trabalho conecta a fisiologia/);
-    await justificativaMencao.fill('curta');
-    await page.getByRole('button', { name: /Salvar menção/ }).click();
-    await page.waitForSelector('text=justificativa com pelo menos 20 caracteres');
-    await justificativaMencao.fill(
-      'Trabalho com conexão clara entre ciência básica e prática em saúde, apresentação segura e dados bem organizados.',
+    assert.equal(
+      await page.getByPlaceholder(/O trabalho conecta a fisiologia/).inputValue(),
+      '',
+      'a justificativa deve começar vazia',
     );
     await page.getByRole('button', { name: /Salvar menção/ }).click();
     await page.waitForSelector('text=Indicado para menção honrosa');
+    assert.match(await page.locator('body').innerText(), /Indicação registrada sem justificativa/);
     assert.match(await page.locator('body').innerText(), /Avaliação concluída/);
 
     // 4. Presidência enxerga a avaliação consolidada

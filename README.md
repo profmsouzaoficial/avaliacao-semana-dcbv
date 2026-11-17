@@ -8,6 +8,8 @@ O app foi construído a partir do convite do Prof. Dr. Márcio Luís Moreira de 
 
 > **Atualização de 16/11/2026 — decisão da Comissão Científica:** a edição passou a ter **uma avaliação por trabalho**. A base de produção foi ajustada para **94 trabalhos e 94 atribuições** (um avaliador por trabalho), com **0 avaliações** registradas. Os oito códigos que não constam da lista corrigida foram removidos; o guia do avaliador foi atualizado para a versão 2. Detalhes na seção [Base de produção](#base-de-produção-estado-em-16112026).
 
+> **Atualização de 17/11/2026:** a justificativa da **menção honrosa** passou a ser **opcional**. A indicação pode ser registrada mesmo sem texto; o guia do avaliador foi atualizado para a versão 3.
+
 ---
 
 ## Capturas
@@ -31,7 +33,7 @@ distribuição, regulamento e versão mobile. A minuta de exemplo está em
 
 | Para quem | O que resolve |
 |---|---|
-| **Avaliador(a)** | Vê só os banners atribuídos a si; pontua cinco critérios de 0 a 4; escreve pontos fortes, sugestões e parecer; indica (ou não) menção honrosa com justificativa; salva rascunho e retoma depois. |
+| **Avaliador(a)** | Vê só os banners atribuídos a si; pontua cinco critérios de 0 a 4; escreve pontos fortes, sugestões e parecer; indica (ou não) menção honrosa, com justificativa opcional; salva rascunho e retoma depois. |
 | **Presidência / master** | Cadastra trabalhos e membros, importa o CSV do parecer, distribui avaliações (inclusive por lista), acompanha cobertura, vê ranking por sessão, exporta CSV e gera a ata em PDF. Pode haver mais de um master. |
 | **Quem só quer conhecer** | Entra no **modo demonstração**, sem senha e sem tocar no Supabase. |
 
