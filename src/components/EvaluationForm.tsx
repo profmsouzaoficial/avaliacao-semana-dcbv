@@ -223,6 +223,35 @@ export function EvaluationForm({ trabalho, onProximo, temProximo }: EvaluationFo
     }
   };
 
+  const salvarMencao = async (indicacao: boolean, justificativa: string) => {
+    if (!membro) throw new Error('Sessão expirada. Entre novamente para salvar a menção.');
+    const avaliacao = montarAvaliacao(true);
+    avaliacao.indicacaoMencao = indicacao;
+    avaliacao.justificativaMencao = justificativa.trim();
+    const salva = await salvarAvaliacao(avaliacao);
+    setIndicacaoMencao(salva.indicacaoMencao);
+    setJustificativaMencao(salva.justificativaMencao);
+    setConcluida(salva.concluida);
+    setSalvoEm(salva.atualizadoEm);
+    setBaseline(
+      serializar({
+        notas: salva.notas,
+        parecer: salva.parecer,
+        pontosFortes: salva.pontosFortes,
+        sugestoes: salva.sugestoes,
+        indicacaoMencao: salva.indicacaoMencao,
+        justificativaMencao: salva.justificativaMencao,
+      }),
+    );
+    setErro(null);
+    notificar(
+      salva.indicacaoMencao
+        ? 'Menção honrosa registrada. A indicação já aparece para a comissão.'
+        : 'Indicação de menção removida.',
+      'sucesso',
+    );
+  };
+
   if (!membro) return null;
 
   return (
@@ -328,6 +357,7 @@ export function EvaluationForm({ trabalho, onProximo, temProximo }: EvaluationFo
           justificativaMencao={justificativaMencao}
           salvando={salvandoTipo !== null}
           onReabrir={() => void reabrir()}
+          onSalvarMencao={salvarMencao}
           onProximo={onProximo}
           temProximo={temProximo}
         />
@@ -659,6 +689,7 @@ function ResumoConcluido({
   justificativaMencao,
   salvando,
   onReabrir,
+  onSalvarMencao,
   onProximo,
   temProximo,
 }: {
@@ -672,9 +703,45 @@ function ResumoConcluido({
   justificativaMencao: string;
   salvando: boolean;
   onReabrir: () => void;
+  onSalvarMencao: (indicacao: boolean, justificativa: string) => Promise<void>;
   onProximo?: () => void;
   temProximo: boolean;
 }) {
+  const [editandoMencao, setEditandoMencao] = useState(false);
+  const [indicacaoLocal, setIndicacaoLocal] = useState(indicacaoMencao);
+  const [justificativaLocal, setJustificativaLocal] = useState(justificativaMencao);
+  const [erroMencao, setErroMencao] = useState<string | null>(null);
+  const [salvandoMencao, setSalvandoMencao] = useState(false);
+
+  useEffect(() => {
+    setIndicacaoLocal(indicacaoMencao);
+    setJustificativaLocal(justificativaMencao);
+  }, [indicacaoMencao, justificativaMencao]);
+
+  const confirmarMencao = async () => {
+    if (indicacaoLocal && justificativaLocal.trim().length < 20) {
+      setErroMencao('Para indicar menção honrosa, escreva uma justificativa com pelo menos 20 caracteres.');
+      return;
+    }
+    setSalvandoMencao(true);
+    setErroMencao(null);
+    try {
+      await onSalvarMencao(indicacaoLocal, justificativaLocal);
+      setEditandoMencao(false);
+    } catch (e) {
+      setErroMencao(mensagemDeErro(e));
+    } finally {
+      setSalvandoMencao(false);
+    }
+  };
+
+  const abrirEdicaoMencao = () => {
+    setIndicacaoLocal(indicacaoMencao);
+    setJustificativaLocal(justificativaMencao);
+    setErroMencao(null);
+    setEditandoMencao(true);
+  };
+
   return (
     <div className="animate-rise">
       <div className="card overflow-hidden border-emerald-200">
@@ -740,23 +807,118 @@ function ResumoConcluido({
         <div className="border-t border-line-soft px-5 py-4">
           <div
             className={classNames(
-              'flex items-start gap-3 rounded-2xl border px-4 py-3',
+              'rounded-2xl border px-4 py-3',
               indicacaoMencao
                 ? 'border-accent-200 bg-accent-50'
                 : 'border-line bg-paper-light',
             )}
           >
-            <Award className={classNames('mt-0.5 h-4 w-4 shrink-0', indicacaoMencao ? 'text-accent-600' : 'text-ink-muted')} />
-            <div>
-              <p className="text-[11.5px] font-semibold text-ink">
-                {indicacaoMencao ? 'Indicado para menção honrosa' : 'Não indicado para menção honrosa'}
-              </p>
-              <p className="mt-0.5 text-[11px] leading-relaxed text-ink-muted">
-                {indicacaoMencao
-                  ? justificativaMencao || 'Sem justificativa registrada.'
-                  : 'A ausência de indicação não impede que a comissão considere o trabalho.'}
-              </p>
+            <div className="flex items-start gap-3">
+              <Award
+                className={classNames(
+                  'mt-0.5 h-4 w-4 shrink-0',
+                  indicacaoMencao ? 'text-accent-600' : 'text-ink-muted',
+                )}
+              />
+              <div className="min-w-0 flex-1">
+                <p className="text-[11.5px] font-semibold text-ink">
+                  {indicacaoMencao
+                    ? 'Indicado para menção honrosa'
+                    : 'Não indicado para menção honrosa'}
+                </p>
+                <p className="mt-0.5 text-[11px] leading-relaxed text-ink-muted">
+                  {indicacaoMencao
+                    ? justificativaMencao || 'Sem justificativa registrada.'
+                    : 'A ausência de indicação não impede que a comissão considere o trabalho.'}
+                </p>
+                {!editandoMencao && (
+                  <button
+                    type="button"
+                    onClick={abrirEdicaoMencao}
+                    className="mt-2 inline-flex items-center gap-1.5 rounded-lg text-[11px] font-semibold text-brand-700 underline decoration-brand-200 underline-offset-2 hover:text-brand-900"
+                  >
+                    <Award className="h-3.5 w-3.5" />
+                    {indicacaoMencao ? 'Alterar indicação de menção' : 'Indicar para menção honrosa'}
+                  </button>
+                )}
+              </div>
             </div>
+
+            {editandoMencao && (
+              <div className="mt-3 border-t border-line-soft pt-3 animate-fade">
+                <label className="flex cursor-pointer items-start gap-2.5">
+                  <input
+                    type="checkbox"
+                    checked={indicacaoLocal}
+                    onChange={(e) => {
+                      setIndicacaoLocal(e.target.checked);
+                      setErroMencao(null);
+                    }}
+                    className="mt-0.5 h-4 w-4 shrink-0 accent-brand-700"
+                  />
+                  <span className="text-[11.5px] font-semibold text-ink">
+                    Indicar este trabalho para menção honrosa
+                  </span>
+                </label>
+                {indicacaoLocal && (
+                  <div className="mt-3 pl-7">
+                    <label className="block">
+                      <span className="mb-1.5 flex items-center justify-between gap-3">
+                        <span className="text-[11px] font-semibold text-ink-soft">
+                          Por que este trabalho merece a menção?
+                        </span>
+                        <span
+                          className={classNames(
+                            'text-[10px] font-semibold',
+                            justificativaLocal.trim().length >= 20
+                              ? 'text-emerald-600'
+                              : 'text-ink-muted',
+                          )}
+                        >
+                          {justificativaLocal.trim().length}/20 mín.
+                        </span>
+                      </span>
+                      <textarea
+                        value={justificativaLocal}
+                        onChange={(e) => {
+                          setJustificativaLocal(e.target.value);
+                          setErroMencao(null);
+                        }}
+                        rows={3}
+                        placeholder="Ex.: O trabalho conecta a fisiologia da coagulação a um problema real de saúde e a apresentação foi clara e segura."
+                        className="w-full resize-y rounded-xl border border-line bg-white px-3 py-2.5 text-[12.5px] leading-relaxed text-ink outline-none transition placeholder:text-ink-muted/70 focus:border-brand-400 focus:ring-4 focus:ring-brand-100"
+                      />
+                    </label>
+                  </div>
+                )}
+                {erroMencao && (
+                  <p role="alert" className="mt-2 rounded-xl bg-rose-50 px-3 py-2 text-[11px] font-medium text-rose-700">
+                    {erroMencao}
+                  </p>
+                )}
+                <div className="mt-3 flex flex-wrap items-center gap-2 pl-7">
+                  <Button
+                    tamanho="sm"
+                    onClick={() => void confirmarMencao()}
+                    carregando={salvandoMencao}
+                    icone={<Save className="h-3.5 w-3.5" />}
+                  >
+                    Salvar menção
+                  </Button>
+                  <Button
+                    tamanho="sm"
+                    variante="ghost"
+                    onClick={() => {
+                      setEditandoMencao(false);
+                      setErroMencao(null);
+                    }}
+                    disabled={salvandoMencao}
+                  >
+                    Cancelar
+                  </Button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
